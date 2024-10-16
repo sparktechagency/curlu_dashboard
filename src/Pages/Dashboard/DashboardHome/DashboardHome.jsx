@@ -1,5 +1,5 @@
 import { Col, Row } from "antd";
-import React from "react";
+import React, { useEffect } from "react";
 import "./DashboardHome.css";
 import TotalSellerListTable from "../../../Components/Dashboard/TotalSellerListTable";
 import TotalSellerChart from "./TotalSellerChart";
@@ -13,6 +13,7 @@ import { Link } from "react-router-dom";
 import salon from '../../../assets/salon.png'
 import earning from '../../../assets/earning.png'
 import TotalSalonstatistics from "./TotalSalonstatistics";
+import platform from 'platform';
 function DashboardHome() {
   const onChange = (pageNumber) => {
     console.log("Page: ", pageNumber);
@@ -43,7 +44,12 @@ function DashboardHome() {
       bgColor: "#FFF3D6"
     },
   ]
-
+  // useEffect(() => {
+  //   const osInfo = platform.os;
+  //   const browserInfo = platform.name + ' ' + platform.version;
+  //   console.log('Operating System:', osInfo);
+  //   console.log('Browser Info:', browserInfo)
+  // })
   return (
     <div>
       <div className="grid grid-cols-3 items-center gap-4">
@@ -95,8 +101,8 @@ function DashboardHome() {
           <TotalSalonstatistics />
         </div>
         <div className="w-full h-full overflow-x-scroll bg-white rounded-2xl">
-        <TotalSellerListTable />
-      </div>
+          <TotalSellerListTable />
+        </div>
       </div>
       <div style={{ marginTop: "20px", marginBottom: "15px", display: "grid", gridTemplateColumns: "auto auto auto", gap: "20px" }} >
       </div>

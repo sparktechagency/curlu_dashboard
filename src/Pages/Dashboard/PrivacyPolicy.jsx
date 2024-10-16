@@ -1,11 +1,15 @@
 import React, { useState, useRef, useMemo, useEffect } from "react";
 import JoditEditor from "jodit-react";
 import Swal from "sweetalert2";
+import { useAddPrivacyMutation, useGetPrivacyQuery } from "../../Redux/Apis/aboutApis";
+import { MakeFormData } from "../../Util/MakeFormData";
+import toast from "react-hot-toast";
 
 const PrivacyPolicy = () => {
-    const [isLoading, seLoading] = useState(false);
     const editor = useRef(null);
-    const [content, setContent] = useState("");
+    const [postPrivacy] = useAddPrivacyMutation()
+    const { data } = useGetPrivacyQuery()
+    const [content, setContent] = useState(data?.description);
     const config = {
         readonly: false,
         placeholder: "Start typings...",
@@ -13,6 +17,25 @@ const PrivacyPolicy = () => {
             height: 400,
         },
     };
+    const handlePrivacy = () => {
+        // console.log(content)
+        const data = {
+            description: content,
+            title: 'Privacy Policy',
+            _method: 'PUT'
+        }
+        const formData = MakeFormData(data)
+        postPrivacy(formData).unwrap().then(res => {
+            toast.success(res?.message)
+            console.log(res)
+        }).catch(err => {
+            console.log(err)
+            toast.error(err.data?.message)
+        })
+    }
+    useEffect(() => {
+        setContent(data?.description)
+    }, [data?.description])
     return (
         <>
             <div
@@ -53,7 +76,7 @@ const PrivacyPolicy = () => {
                     alignItems: "center",
                 }}
             >
-                <button
+                <button onClick={handlePrivacy}
                     style={{
                         height: 44,
                         width: 150,

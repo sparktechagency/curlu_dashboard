@@ -368,5 +368,4 @@ const SliderSetting = () => {
         </div>
     );
 };
-
 export default SliderSetting

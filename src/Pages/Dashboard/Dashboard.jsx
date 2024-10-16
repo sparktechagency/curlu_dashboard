@@ -218,7 +218,7 @@ const Dashboard = () => {
               alignItems: "center",
               paddingLeft: "47px",
               gap: "14px",
-              color: "#F2F2F2",
+              // color: "#F2F2F2",
               cursor: "pointer",
               padding: '12px 12px',
               borderRadius: '4px',
