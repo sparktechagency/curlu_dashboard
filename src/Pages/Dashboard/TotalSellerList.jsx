@@ -1,40 +1,48 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Calendar, Dropdown, Input, Modal, Select, Slider, Table } from 'antd';
-import { FaRegFilePdf, FaRegTrashCan, FaUserCheck } from 'react-icons/fa6';
+import { FaFileExcel, FaRegFilePdf, FaRegTrashCan, FaUserCheck } from 'react-icons/fa6';
 import Swal from 'sweetalert2';
 import { GoArrowUpRight } from 'react-icons/go';
 import { TfiReload } from 'react-icons/tfi';
+import { useGetUserQuery } from '../../Redux/Apis/userApi';
+import { imageUrl } from '../../Redux/baseApi';
+import { FaSearch } from 'react-icons/fa';
+import { CSVDownload, CSVLink } from 'react-csv';
 
-const data = [
-  {
-    key: "1",
-    name: "Tushar",
-    email: "tushar@gmail.com",
-    date: "18 Jul, 2023  4:30pm",
-    location: "Banasree",
-    contact: '5489156454745',
-    img: "https://i.ibb.co/B2xfD8H/images.png",
-  },
-];
 
 const TotalSellerList = () => {
   const [value, setValue] = useState(new URLSearchParams(window.location.search).get('date') || new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }));
   const [page, setPage] = useState(new URLSearchParams(window.location.search).get('page') || 1);
+  const [selectedData, setSelectedData] = useState({})
+  const [search, setSearch] = useState('')
   const [open, setOpen] = useState(false)
-  const items = [
-    {
-      label: "Car",
-      key: "Car",
-    },
-    {
-      label: "Bike",
-      key: "Bike",
-    },
-    {
-      label: "Cycle",
-      key: "Cycle",
-    },
-  ];
+  const { data: users, refetch } = useGetUserQuery({ page, location: search })
+
+  const data = users?.data?.map((user, index) => {
+    const { name, last_name, email, created_at, address, phone, image, ...rest } = user;
+    return {
+      key: index + 1 + ((users?.current_page - 1) * users?.per_page),
+      name: `${name} ${last_name}`,
+      email: email,
+      date: new Date(created_at).toLocaleString('en-US', { month: 'short', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }),  // Format creation date
+      location: address || "Unknown",
+      contact: phone || "No contact",
+      img: image ? `${imageUrl}${image}` : "https://i.ibb.co/B2xfD8H/images.png",
+      rest
+    };
+  });
+  const csvData = users?.data?.map((user, index) => {
+    const { name, last_name, email, created_at, address, phone, image, } = user;
+    return {
+      key: index + 1 + ((users?.current_page - 1) * users?.per_page),
+      name: `${name} ${last_name}`,
+      email: email,
+      date: new Date(created_at).toLocaleString('en-US', { month: 'short', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }),  // Format creation date
+      location: address || "Unknown",
+      contact: phone || "No contact",
+      img: image ? `${imageUrl}${image}` : "https://i.ibb.co/B2xfD8H/images.png",
+    };
+  });
 
   const handleDelete = (id) => {
     Swal.fire({
@@ -99,7 +107,7 @@ const TotalSellerList = () => {
       key: "printView",
       render: (_, record) => (
         <div className='flex justify-start items-center gap-2'>
-          <GoArrowUpRight onClick={() => { setOpen(true) }} className="text-blue-500 text-2xl cursor-pointer" />
+          <GoArrowUpRight onClick={() => { setOpen(true); setSelectedData(record) }} className="text-blue-500 text-2xl cursor-pointer" />
           <FaUserCheck onClick={() => { }} className="text-green-500 text-2xl cursor-pointer" />
         </div>
       ),
@@ -131,36 +139,17 @@ const TotalSellerList = () => {
       <div className='mb-6 flex justify-between items-center'
 
       >
-        <h1 style={{ fontSize: "20px", fontWeight: 600, color: "#2F2F2F" }}>Total Seller List</h1>
+        <h1 style={{ fontSize: "20px", fontWeight: 600, color: "#2F2F2F" }}>All user details</h1>
         <div className='flex justify-end items-center gap-3'>
-          <button className='text-2xl'>
-            <FaRegFilePdf />
-          </button>
-          <Select className='min-w-44'
-            onChange={handleChange}
-            showSearch
-            placeholder="location"
-            filterOption={(input, option) =>
-              (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-            }
-            options={[
-              {
-                value: '1',
-                label: 'Jack',
-              },
-              {
-                value: '2',
-                label: 'Lucy',
-              },
-              {
-                value: '3',
-                label: 'Tom',
-              },
-            ]}
-          />
-          <button className='p-2 text-lg text-white bg-[#F27405] rounded-md'>
+          <CSVLink data={csvData || []}>
+            <button className='text-2xl'>
+              <FaFileExcel />
+            </button>
+          </CSVLink>
+          <Input onChange={(e) => setSearch(e.target.value)} suffix={<FaSearch className='text-gray-400' />} placeholder='search by location' />
+          {/* <button onClick={() => refetch()} className='p-2 text-lg text-white bg-[#F27405] rounded-md'>
             <TfiReload />
-          </button>
+          </button> */}
         </div>
       </div>
       <div>
@@ -183,36 +172,37 @@ const TotalSellerList = () => {
       >
         <div className='p-6'>
           <div className='flex justify-center items-center flex-col py-5 gap-4'>
-            <img className='w-20 h-20 rounded-full' src="https://i.ibb.co/B2xfD8H/images.png" alt="" />
-            <p className='text-base font-semibold'>Md. Mahmud</p>
+            <img className='w-20 h-20 rounded-full' src={selectedData?.img || "https://i.ibb.co/B2xfD8H/images.png"} alt={selectedData?.name || "User Image"} />
+            <p className='text-base font-semibold'>{selectedData?.name || "Md. Mahmud"}</p>
           </div>
           <div className='flex flex-col justify-start items-start gap-3'>
             <div>
               <p className='text-sm font-semibold mb-1'>Name</p>
-              <p className=' text-xs'>Mr. Mahmud</p>
+              <p className=' text-xs'>{selectedData?.name || "Mr. Mahmud"}</p>
             </div>
             <div>
               <p className='text-sm font-semibold mb-1'>Email</p>
-              <p className=' text-xs'>mahmud@gmail.com</p>
+              <p className=' text-xs'>{selectedData?.email || "mahmud@gmail.com"}</p>
             </div>
             <div>
               <p className='text-sm font-semibold mb-1'>Address</p>
-              <p className=' text-xs'>76/4 R no. 60/1 Rue des Saints-Paris, 75005 Paris</p>
+              <p className=' text-xs'>{selectedData?.location || "76/4 R no. 60/1 Rue des Saints-Paris, 75005 Paris"}</p>
             </div>
             <div>
               <p className='text-sm font-semibold mb-1'>Contact No</p>
-              <p className=' text-xs'>+099999</p>
+              <p className=' text-xs'>{selectedData?.contact || "+099999"}</p>
             </div>
             <div>
               <p className='text-sm font-semibold mb-1'>Date of birth</p>
-              <p className=' text-xs'>+17 dec, 2024</p>
+              <p className=' text-xs'>{selectedData?.date_of_birth ? new Date(selectedData.date_of_birth).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' }) : "17 Dec, 2024"}</p>
             </div>
             <div>
               <p className='text-sm font-semibold mb-1'>Gender</p>
-              <p className=' text-xs'>Male</p>
+              <p className=' text-xs'>{selectedData?.gender || "Male"}</p>
             </div>
           </div>
         </div>
+
       </Modal>
     </div>
   )

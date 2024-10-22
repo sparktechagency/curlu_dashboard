@@ -107,7 +107,7 @@ const ServicesCategory = () => {
             <div className='mb-6 flex justify-between items-center'>
                 <h1 style={{ fontSize: "20px", fontWeight: 600, color: "#2F2F2F" }}>Manage Services Category</h1>
                 <div className='flex justify-end items-center gap-3'>
-                    <CSVLink data={categories}>
+                    <CSVLink data={categories || []}>
                         <button className='text-2xl'>
                             <BsFileEarmarkExcelFill />
                         </button>

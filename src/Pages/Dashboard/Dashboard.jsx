@@ -100,10 +100,10 @@ const Dashboard = () => {
       title: "About Us",
       path: "/about",
     },
-    {
-      title: "Contact Us",
-      path: "/contact",
-    },
+    // {
+    //   title: "Contact Us",
+    //   path: "/contact",
+    // },
     {
       title: "FAQ",
       path: "/faq",
@@ -126,7 +126,7 @@ const Dashboard = () => {
           overflow: "auto",
           position: "fixed",
           height: "100vh",
-          overflowY: "hidden",
+          // overflowY: "hidden",
           zIndex: 2,
           backgroundColor: "white",
           overflowY:'scroll'

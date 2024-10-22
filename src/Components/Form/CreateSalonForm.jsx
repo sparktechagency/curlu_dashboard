@@ -1,17 +1,24 @@
 import React, { useState } from 'react'
 import { Calendar, Dropdown, Form, Input, Button, Checkbox, Space, } from 'antd';
 import { FaEye, FaEyeSlash, FaImage } from 'react-icons/fa6';
+import toast from 'react-hot-toast';
 const CreateSalonForm = () => {
     const [passwordInputType, setPasswordInputType] = useState('password');
     const [CpasswordInputType, setCPasswordInputType] = useState('password');
-    const onFinish = (values) => {
-        console.log('Success:', values);
-    };
+
     const [image, setImage] = useState({
         idCard: false,
         Kbis: false,
         profile: false
     })
+    const onFinish = (values) => {
+        if (!image?.idCard || !image?.Kbis || !image?.profile) {
+            return toast.error(`${!image?.idCard ? 'Id Card' : !image?.Kbis ? "Kbis" : "Salon Profile"} Image is required`)
+        }
+        values.kbis = image?.Kbis
+        values.id_card = image?.idCard
+        console.log('Success:', values);
+    };
     return (
         <Form
             layout='vertical'
@@ -21,7 +28,7 @@ const CreateSalonForm = () => {
             <div className='grid grid-cols-2 gap-2'>
                 <Form.Item
                     label="Salon name"
-                    name="salonName"
+                    name="name"
                     rules={[
                         {
                             required: true,
@@ -45,7 +52,7 @@ const CreateSalonForm = () => {
                 </Form.Item>
                 <Form.Item
                     label="Salon location"
-                    name="salonLocation"
+                    name="address"
                     rules={[
                         {
                             required: true,
@@ -69,7 +76,7 @@ const CreateSalonForm = () => {
                 </Form.Item>
                 <Form.Item
                     label="Bank account no."
-                    name="bankAccount"
+                    name="iban_number"
                     rules={[
                         {
                             required: true,
@@ -83,7 +90,7 @@ const CreateSalonForm = () => {
                     className='relative'
                     label="Id card"
                     type='file'
-                    name="idCard"
+                // name="id_card"
                 >
                     <label className='flex justify-start items-center gap-2 border w-full py-1 px-2 rounded-md' htmlFor="idCard">
                         {
@@ -100,7 +107,7 @@ const CreateSalonForm = () => {
                     className='relative'
                     label="Kbis"
                     type='file'
-                    name="Kbis"
+                // name="kbis"
                 >
                     <label className='flex justify-start items-center gap-2 border w-full py-1 px-2 rounded-md' htmlFor="Kbis">
                         {
@@ -117,7 +124,7 @@ const CreateSalonForm = () => {
                     className='relative'
                     label="Profile picture"
                     type='file'
-                    name="profile"
+                // name="profile"
                 >
                     <label className='flex justify-start items-center gap-2 border w-full py-1 px-2 rounded-md' htmlFor="profile">
                         {
@@ -150,7 +157,7 @@ const CreateSalonForm = () => {
                 </Form.Item>
                 <Form.Item
                     label="Confirm Password"
-                    name="Cpassword"
+                    name="password_confirmation"
                     rules={[
                         {
                             required: true,

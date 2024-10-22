@@ -66,7 +66,7 @@ function App() {
               <Route path="/chat" element={<Chat />} />
               <Route path="/setting-change-password" element={<ChangePassword />} />
               <Route path="/settings-profile" element={<Profile />} />
-              <Route path="/seller-list" element={<TotalSellerList  />} />
+              <Route path="/seller-list" element={<product-category  />} />
               <Route path="/seller-details/:id" element={<SellerDetails />} />
               <Route path="/seller-product-list" element={<SellerProductList />} />
               <Route path="/emails" element={<Emails />} />

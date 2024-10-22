@@ -58,6 +58,29 @@ const aboutUsApi = baseApi.injectEndpoints({
             query: () => `terms-condition`,
             providesTags: ['terms']
         }),
+        addFaq: builder.mutation({
+            query: (data) => {
+                ;
+                return {
+                    url: 'faqs',
+                    method: 'POST',
+                    body: data,
+                    headers: {
+                        'Accept': "application/json",
+                        Authorization: `Bearer ${localStorage.getItem('token') ? JSON.parse(localStorage.getItem('token')) : ""}`,
+                    }
+                };
+            },
+            invalidatesTags: ['faq'],
+        }),
+        getFaqs: builder.query({
+            query: ({ page }) => ({ url: `faqs`, method: 'GET', params: { page } }),
+            providesTags: ['faq']
+        }),
+        deleteFaqs: builder.mutation({
+            query: (id) => ({ url: `faqs/${id}`, method: 'DELETE' }),
+            invalidatesTags: ['faq']
+        }),
     }),
 });
 
@@ -67,5 +90,8 @@ export const {
     useAddPrivacyMutation,
     useGetPrivacyQuery,
     useGetTermsQuery,
-    useAddTermsMutation
+    useAddTermsMutation,
+    useAddFaqMutation,
+    useGetFaqsQuery,
+    useDeleteFaqsMutation
 } = aboutUsApi;

@@ -6,22 +6,42 @@ import { GoArrowUpRight } from 'react-icons/go';
 import { TfiReload } from 'react-icons/tfi';
 import { RiVerifiedBadgeFill } from "react-icons/ri";
 import CreateSalonForm from '../../Components/Form/CreateSalonForm';
-const data = [
-    {
-        key: "1",
-        name: "Tushar",
-        email: "tushar@gmail.com",
-        date: "18 Jul, 2023  4:30pm",
-        location: "Banasree",
-        contact: '5489156454745',
-        img: "https://i.ibb.co/B2xfD8H/images.png",
-    },
-];
+import { useGetSalonQuery } from '../../Redux/Apis/salonApis';
+import { imageUrl } from '../../Redux/baseApi';
+
 const SalonsDetails = () => {
     const [value, setValue] = useState(new URLSearchParams(window.location.search).get('date') || new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }));
     const [page, setPage] = useState(new URLSearchParams(window.location.search).get('page') || 1);
     const [open, setOpen] = useState(false)
     const [openAddSalon, setOpenAddSalon] = useState(false)
+    const [selectedData, setSelectedData] = useState({})
+    const { data: salons } = useGetSalonQuery({ page })
+    const data = salons?.data?.map((salon, index) => {
+        const { user, created_at, id, experience, salon_type, salon_description, id_card, iban_number, kbis, cover_image, ...rest } = salon;
+        const { name, last_name, email, address, phone, image, ...userRest } = user;
+
+        return {
+            key: index + 1,
+            name: `${name} ${last_name}`,
+            email: email,
+            date: new Date(created_at).toLocaleString('en-US', { month: 'short', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }),  // Format creation date
+            location: address || "Unknown",
+            contact: phone || "No contact",
+            img: image ? `${imageUrl}${image}` : "https://i.ibb.co/B2xfD8H/images.png",
+            cover_image: cover_image ? `${imageUrl}${cover_image}` : "https://i.ibb.co/CBvrNxh/Rectangle-5252.png",
+            rest: {
+                id,
+                experience,
+                salon_type,
+                salon_description,
+                id_card,
+                iban_number,
+                kbis,
+                ...userRest,
+                ...rest
+            }
+        };
+    });
     const items = [
         {
             label: "Car",
@@ -94,7 +114,7 @@ const SalonsDetails = () => {
             key: "printView",
             render: (_, record) => (
                 <div className='flex justify-start items-center gap-2'>
-                    <GoArrowUpRight onClick={() => { setOpen(true) }} className="text-blue-500 text-2xl cursor-pointer" />
+                    <GoArrowUpRight onClick={() => { setOpen(true); setSelectedData(record) }} className="text-blue-500 text-2xl cursor-pointer" />
                     <FaUserCheck onClick={() => { }} className="text-green-500 text-2xl cursor-pointer" />
                 </div>
             ),
@@ -175,69 +195,71 @@ const SalonsDetails = () => {
             >
                 <div>
                     <div className='flex justify-center items-center flex-col gap-4'>
-                        <img className='w-full h-[150px]' src="https://i.ibb.co/CBvrNxh/Rectangle-5252.png" alt="" />
+                        <img className='w-full h-[150px]' src={selectedData?.rest?.cover_image || "https://i.ibb.co/CBvrNxh/Rectangle-5252.png"} alt="Cover" />
                         <div className='flex justify-center items-center flex-col gap-2 -mt-16'>
                             <div className='w-20 h-20 rounded-full relative'>
-                                <img className='w-full h-full rounded-full' src="https://i.ibb.co/B2xfD8H/images.png" alt="" />
+                                <img className='w-full h-full rounded-full' src={selectedData?.img || "https://i.ibb.co/B2xfD8H/images.png"} alt="Profile" />
                                 <button className='text-xl text-blue-500 absolute right-0 bottom-0'>
                                     <RiVerifiedBadgeFill />
                                 </button>
                             </div>
-                            <p className='text-base font-semibold'>Md. Mahmud</p>
+                            <p className='text-base font-semibold'>{selectedData?.name || "User Name"}</p>
                             <div className="flex justify-start items-center gap-2">
                                 <FaStar className="text-yellow-500" />
-                                <p>4.5/5</p>
+                                <p>4.5/5</p> {/* You may update this with real ratings if available */}
                             </div>
-                            <p>Total earning : 2000€</p>
+                            <p>Total earning: {selectedData?.rest?.total_earning || "2000€"}</p> {/* Assuming `total_earning` is a field */}
                         </div>
                     </div>
                     <div className='grid grid-cols-2 justify-start items-start gap-3 p-6'>
                         <div>
                             <p className='text-sm font-semibold mb-1'>Salon Name</p>
-                            <p className=' text-xs'>Mr. Mahmud</p>
+                            <p className='text-xs'>{selectedData?.name || "Mr. Mahmud"}</p>
                         </div>
                         <div>
                             <p className='text-sm font-semibold mb-1'>Email</p>
-                            <p className=' text-xs'>mahmud@gmail.com</p>
+                            <p className='text-xs'>{selectedData?.email || "mahmud@gmail.com"}</p>
                         </div>
                         <div>
                             <p className='text-sm font-semibold mb-1'>Location</p>
-                            <p className=' text-xs'>76/4 R no. 60/1 Rue des Saints-Paris, 75005 Paris</p>
+                            <p className='text-xs'>{selectedData?.location || "76/4 R no. 60/1 Rue des Saints-Paris, 75005 Paris"}</p>
                         </div>
                         <div>
                             <p className='text-sm font-semibold mb-1'>Contact No</p>
-                            <p className=' text-xs'>+099999</p>
+                            <p className='text-xs'>{selectedData?.contact || "+099999"}</p>
                         </div>
                         <div>
                             <p className='text-sm font-semibold mb-1'>Experience</p>
-                            <p className=' text-xs'>5 year</p>
+                            <p className='text-xs'>{selectedData?.rest?.experience || "5 years"}</p>
                         </div>
                         <div>
-                            <p className='text-sm font-semibold mb-1'>Salon type</p>
-                            <p className=' text-xs'>All</p>
+                            <p className='text-sm font-semibold mb-1'>Salon Type</p>
+                            <p className='text-xs'>{selectedData?.rest?.salon_type || "All"}</p>
                         </div>
                         <div>
-                            <p className='text-sm font-semibold mb-1'>Bank Account no.</p>
-                            <p className=' text-xs'>321656295461</p>
+                            <p className='text-sm font-semibold mb-1'>Bank Account No.</p>
+                            <p className='text-xs'>{selectedData?.rest?.iban_number || "321656295461"}</p>
                         </div>
                         <div>
                             <p className='text-sm font-semibold mb-1'>About</p>
-                            <p className=' text-xs'>dui. at tortor. nisi vitae Nullam adipiscing malesuada faucibus sit lacus orci Nam ac convallis. amet, elit. Donec elit massa nisl. hendrerit lorem. nec nisi</p>
+                            <p className='text-xs'>{selectedData?.rest?.salon_description || "No description available"}</p>
                         </div>
                         <div>
-                            <p className='text-sm font-semibold mb-1'>Id card</p>
+                            <p className='text-sm font-semibold mb-1'>Id Card</p>
                             <div className='pr-12 w-full h-[150px]'>
-                                <img className='w-full h-full object-contain' src="https://i.ibb.co/LJHCZzZ/1600w-vj-I1-KIbwj8o.webp" alt="" />
+                                <img className='w-full h-full object-contain' src={`${imageUrl}${selectedData?.rest?.id_card}`} alt="Id Card" />
                             </div>
                         </div>
                         <div>
                             <p className='text-sm font-semibold mb-1'>Kbis</p>
                             <div className='pr-12 w-full h-[150px]'>
-                                <img className='w-full h-full object-contain' src="https://i.ibb.co/LJHCZzZ/1600w-vj-I1-KIbwj8o.webp" alt="" />
+                                <img className='w-full h-full object-contain' src={`${imageUrl}${selectedData?.rest?.kbis}`} alt="Kbis" />
                             </div>
                         </div>
                     </div>
                 </div>
+
+
             </Modal>
             <Modal
                 open={openAddSalon}
