@@ -1,5 +1,5 @@
 import { Layout, Badge, } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, Outlet, useNavigate, useLocation } from "react-router-dom";
 import LogoText from "../../assets/logo-text.png";
 import { HiLogout } from "react-icons/hi";
@@ -15,11 +15,13 @@ import { MdKeyboardArrowDown } from "react-icons/md";
 import { FaFileInvoiceDollar, FaFire, FaRuler, FaStore } from "react-icons/fa6";
 import { TiShoppingCart } from "react-icons/ti";
 import { IoIosChatbubbles, IoMdNotificationsOutline } from "react-icons/io";
+import { useGetProfileQuery } from "../../Redux/Apis/authApis";
 const Dashboard = () => {
   const [dropdown, setDropdown] = useState(false)
   const { pathname } = useLocation();
+  const { data } = useGetProfileQuery()
   const navigate = useNavigate();
-
+  console.log(data)
   const handleLogOut = () => {
     navigate('/login');
     window.location.reload();
@@ -67,11 +69,6 @@ const Dashboard = () => {
       icon: <TbShoppingCartDollar size={24} />,
     },
     {
-      title: "Make Admin",
-      path: "/make-admin",
-      icon: <LuUserPlus size={24} />,
-    },
-    {
       title: "Chat",
       path: "/chat",
       icon: <IoIosChatbubbles size={24} />,
@@ -117,8 +114,17 @@ const Dashboard = () => {
       path: "/terms-condition",
     },
   ]
+  useEffect(() => {
+    if (data?.user?.role_type === 'SUPER ADMIN') {
+      linkItems.unshift({
+        title: "Make Admin",
+        path: "/make-admin",
+        icon: <LuUserPlus size={24} />,
+      })
+    }
+  }, [data?.user])
   return (
-    <Layout style={{ height: "100vh", width: "100vw"}}>
+    <Layout style={{ height: "100vh", width: "100vw" }}>
       <Sider
         width="233px"
         trigger={null}
@@ -129,7 +135,7 @@ const Dashboard = () => {
           // overflowY: "hidden",
           zIndex: 2,
           backgroundColor: "white",
-          overflowY:'scroll'
+          overflowY: 'scroll'
         }}
       >
 
@@ -246,19 +252,19 @@ const Dashboard = () => {
                   left: "0px",
                   top: "40px",
                   width: '100%',
-                  paddingLeft:'4px',
+                  paddingLeft: '4px',
                   zIndex: '100'
                 }}
               >
                 {
                   settingOptions?.map((item, index) => <Link key={index} to={item?.path} style={{
                     textAlign: 'center',
-                    color:  item.path === pathname ? "#FBFBFB" : '#f27405',
+                    color: item.path === pathname ? "#FBFBFB" : '#f27405',
                     width: '100%',
                     backgroundColor: item.path === pathname ? "#f27405" : '#FBFBFB',
                     display: 'block',
                     padding: '7px 0px',
-                    borderRadius:'4px',
+                    borderRadius: '4px',
                   }}>
                     <p>{item?.title}</p>
                   </Link>)
@@ -317,7 +323,7 @@ const Dashboard = () => {
                 <RiNotification2Line color="#6A6A6A" size={24} />
               </Link>
             </Badge>
-            <div onClick={()=>navigate('/profile')} className="border cursor-pointer"
+            <div onClick={() => navigate('/profile')} className="border cursor-pointer"
               style={{
                 width: "170px",
                 height: "42px",

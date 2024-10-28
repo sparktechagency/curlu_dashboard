@@ -4,10 +4,17 @@ import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import { Button, Form, Input } from "antd";
 import { CiEdit } from "react-icons/ci";
 import Swal from "sweetalert2";
+import { useChangePasswordMutation, useGetProfileQuery, useUpdateUserMutation } from "../../Redux/Apis/authApis";
+import { MakeFormData } from "../../Util/MakeFormData";
+import toast from "react-hot-toast";
+import { generateImage } from "../../Redux/baseApi";
 const AdminProfile = () => {
   const [image, setImage] = useState();
   const [form] = Form.useForm()
   const [tab, setTab] = useState(new URLSearchParams(window.location.search).get('tab') || "Profile");
+  const { data: profile } = useGetProfileQuery()
+  const [update, { isLoading }] = useUpdateUserMutation()
+  const [updatePass, { isLoading: passLoading }] = useChangePasswordMutation()
   const [passError, setPassError] = useState('')
   const handlePageChange = (tab) => {
     setTab(tab);
@@ -15,7 +22,7 @@ const AdminProfile = () => {
     params.set('tab', tab);
     window.history.pushState(null, "", `?${params.toString()}`);
   };
-
+  console.log(profile?.user)
   const handleChange = (e) => {
     const file = e.target.files[0];
     setImage(file)
@@ -30,23 +37,42 @@ const AdminProfile = () => {
     } else {
       setPassError('')
     }
+    const data = {
+      password: values?.new_password,
+      password_confirmation: values.current_password,
+      email: profile.user?.email
+    }
+    updatePass(data).unwrap().then(res => {
+      toast.success(res?.message)
+    }).catch(err => {
+      toast.error(err?.data?.message)
+    })
   };
   const onEditProfile = (values) => {
     const data = {
-      profile_image: image,
       name: values.fullName,
-      contact: values.mobileNumber,
-      address: values.address
+      phone: values.mobileNumber,
+      address: values.address,
     }
+    if (image) {
+      data.image = image
+    }
+    const formData = MakeFormData(data)
+    update(formData).unwrap().then(res => {
+      toast.success(res?.message)
+    }).catch(err => {
+      toast.error(err?.data?.message)
+    })
   }
-//   useEffect(() => {
-//     const data = {
-//       fullName: user.name,
-//       mobileNumber: user.phone_number,
-//       address: user.address
-//     }
-//     form.setFieldsValue(data)
-//   }, [user])
+  useEffect(() => {
+    const data = {
+      fullName: profile?.user?.name,
+      mobileNumber: profile?.user?.phone,
+      address: profile?.user?.address,
+      email: profile?.user?.email
+    }
+    form.setFieldsValue(data)
+  }, [profile?.user])
   return (
     <div>
       <div className='container pb-16'>
@@ -55,13 +81,13 @@ const AdminProfile = () => {
           <div className='relative w-[140px] h-[124px] mx-auto'>
             <input type="file" onInput={handleChange} id='img' style={{ display: "none" }} />
             <img
-              style={{ width: 140, height: 140, borderRadius: "100%" }}
-              src={`https://i.ibb.co/d4RSbKx/Ellipse-980.png`}
+              style={{ width: 140, height: 140, borderRadius: "100%" }} className="object-cover"
+              src={image ? URL.createObjectURL(image) : profile?.user?.image ? generateImage(profile?.user?.image) : `https://i.ibb.co/d4RSbKx/Ellipse-980.png`}
               alt=""
             />
             {/* <img
               style={{ width: 140, height: 140, borderRadius: "100%" }}
-              src={`${image ? URL.createObjectURL(image) : user?.profile_image?.includes('http') ? 'https://i.ibb.co/d4RSbKx/Ellipse-980.png' : `${ServerUrl}${user.profile_image}`}`}
+              src={`${image ? URL.createObjectURL(image) : profile?.user?.image?.includes('http') ? 'https://i.ibb.co/d4RSbKx/Ellipse-980.png' : generateImage(data?.user?.image)`}
               alt=""
             /> */}
             {
@@ -205,7 +231,7 @@ const AdminProfile = () => {
                       width: 197,
                       height: 48,
                       color: "#FCFCFC",
-                      background:'#F27405'
+                      background: '#F27405'
                     }}
                     className='font-normal text-[16px] leading-6 bg-primary'
                   >
@@ -314,7 +340,7 @@ const AdminProfile = () => {
                       width: 197,
                       height: 48,
                       color: "#FCFCFC",
-                      background:'#F27405'
+                      background: '#F27405'
                     }}
                     className='font-normal text-[16px] leading-6 bg-primary'
                   >

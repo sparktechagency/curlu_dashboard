@@ -53,8 +53,8 @@ const authApi = baseApi.injectEndpoints({
         changePassword: builder.mutation({
             query: (data) => {
                 return {
-                    url: 'auth/change-password',
-                    method: 'PATCH',
+                    url: 'reset-pass',
+                    method: 'POST',
                     body: data
                 }
             },
@@ -64,20 +64,13 @@ const authApi = baseApi.injectEndpoints({
         updateUser: builder.mutation({
             query: (data) => {
                 return {
-                    url: 'auth/update-user',
-                    method: 'PATCH',
+                    url: 'update-profile',
+                    method: 'POST',
                     body: data,
-                }
-            },
-            invalidatesTags: ['auth']
-        }),
-        // update Doctor 
-        updateDoctor: builder.mutation({
-            query: ({ id, data }) => {
-                return {
-                    url: `auth/update-doctor/${id}`,
-                    method: 'PATCH',
-                    body: data,
+                    headers: {
+                        'Accept': "application/json",
+                        Authorization: `Bearer ${JSON.parse((localStorage.getItem('token'))) || ""}`,
+                    }
                 }
             },
             invalidatesTags: ['auth']
@@ -88,7 +81,7 @@ const authApi = baseApi.injectEndpoints({
                 const token = localStorage.getItem('token');
                 if (token) {
                     return {
-                        url: 'auth/profile',
+                        url: 'profile',
                         method: 'GET',
                     };
                 } else {
@@ -113,8 +106,6 @@ export const {
     useChangePasswordMutation,
     // update user 
     useUpdateUserMutation,
-    // update doctor
-    useUpdateDoctorMutation,
     // get profile 
     useGetProfileQuery,
 } = authApi

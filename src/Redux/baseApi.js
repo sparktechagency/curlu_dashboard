@@ -21,7 +21,7 @@ export const generateImage = (image) => {
         return image;
     }
     if (image.startsWith('/')) {
-        return `http://192.168.10.32:8052${image}`;
+        return `http://210.4.77.100:8000${image}`;
     }
-    return `http://192.168.10.32:8052/${image}`;
+    return `http://210.4.77.100:8000/${image}`;
 }
