@@ -9,6 +9,9 @@ import CreateSalonForm from '../../Components/Form/CreateSalonForm';
 import { MdCheckCircleOutline } from "react-icons/md";
 import { FiSearch } from 'react-icons/fi';
 import { IoClose } from 'react-icons/io5';
+import { useGetSalonServicesQuery } from '../../Redux/Apis/salonApis';
+import { generateImage } from '../../Redux/baseApi';
+import { useGetCategoriesQuery } from '../../Redux/Apis/categoryApis';
 const data = [
     {
         key: "1",
@@ -28,21 +31,21 @@ const SalonsServices = () => {
     const [page, setPage] = useState(new URLSearchParams(window.location.search).get('page') || 1);
     const [open, setOpen] = useState(false)
     const [openAddSalon, setOpenAddSalon] = useState(false)
-    const items = [
-        {
-            label: "Car",
-            key: "Car",
-        },
-        {
-            label: "Bike",
-            key: "Bike",
-        },
-        {
-            label: "Cycle",
-            key: "Cycle",
-        },
-    ];
-
+    const { data: salonServices } = useGetSalonServicesQuery({ page })
+    const { data: categoriesData, isLoading, isError } = useGetCategoriesQuery({ page, per_page: 99999999 });
+    const transformedData = salonServices?.data?.map((item, i) => ({
+        key: i + 1 + ((salonServices?.current_page - 1) * salonServices?.per_page),
+        id: item?.id,
+        name: item?.salon?.user?.name,
+        service: item?.service_name,
+        serviceName: item?.service_name,
+        price: `${item?.price}€`,
+        service_status: item?.service_status,
+        date: new Date(item?.created_at).toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+        location: item?.salon?.user?.address,
+        contact: item?.salon?.user?.phone,
+        img: generateImage(item?.service_image)
+    }));
     const handleDelete = (id) => {
         Swal.fire({
             title: "Are you sure?",
@@ -104,14 +107,13 @@ const SalonsServices = () => {
             dataIndex: "printView",
             key: "printView",
             render: (_, record) => (
-                <div className='flex justify-start items-center gap-2 text-green-500'>
-                    Active
+                <div className='flex justify-start items-center gap-2 text-green-500 cursor-pointer'>
+                    {record?.service_status}
                     <MdCheckCircleOutline onClick={() => { }} className=" text-2xl cursor-pointer" />
                 </div>
             ),
         },
     ];
-
     const handlePageChange = (page) => {
         setPage(page);
         const params = new URLSearchParams(window.location.search);
@@ -157,7 +159,7 @@ const SalonsServices = () => {
                     <Select className='min-w-44 h-[40px]'
                         onChange={handleChange}
                         showSearch
-                        placeholder="Hair style"
+                        placeholder="Salon Type"
                         filterOption={(input, option) =>
                             (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
                         }
@@ -170,15 +172,14 @@ const SalonsServices = () => {
                     <Select className='min-w-44 h-[40px]'
                         onChange={handleChange}
                         showSearch
-                        placeholder="Price type"
+                        placeholder="Service type"
                         filterOption={(input, option) =>
                             (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
                         }
-                        options={[
-                            { value: '1', label: 'Jack' },
-                            { value: '2', label: 'Lucy' },
-                            { value: '3', label: 'Tom' },
-                        ]}
+                        options={categoriesData?.data?.map(item => ({
+                            label: item?.category_name,
+                            value: item?.id
+                        }))}
                     />
                     <Select className='min-w-44 h-[40px]'
                         onChange={handleChange}
@@ -201,7 +202,7 @@ const SalonsServices = () => {
             <div>
                 <Table
                     columns={columns}
-                    dataSource={data}
+                    dataSource={transformedData || []}
                     pagination={{
                         pageSize: 10,
                         defaultCurrent: parseInt(page),

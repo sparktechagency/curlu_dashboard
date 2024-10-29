@@ -2,10 +2,13 @@ import React, { useState } from 'react'
 import { Calendar, Dropdown, Form, Input, Button, Checkbox, Space, } from 'antd';
 import { FaEye, FaEyeSlash, FaImage } from 'react-icons/fa6';
 import toast from 'react-hot-toast';
-const CreateSalonForm = () => {
+import { MakeFormData } from '../../Util/MakeFormData';
+import { useCreateSalonMutation } from '../../Redux/Apis/salonApis';
+const CreateSalonForm = ({ closeModal }) => {
+    const [form] = Form.useForm()
     const [passwordInputType, setPasswordInputType] = useState('password');
     const [CpasswordInputType, setCPasswordInputType] = useState('password');
-
+    const [create, { isLoading }] = useCreateSalonMutation()
     const [image, setImage] = useState({
         idCard: false,
         Kbis: false,
@@ -17,18 +20,42 @@ const CreateSalonForm = () => {
         }
         values.kbis = image?.Kbis
         values.id_card = image?.idCard
-        console.log('Success:', values);
+        values.image = image?.profile
+        values.role_type = 'PROFESSIONAL'
+        const formData = MakeFormData(values)
+        create(formData).unwrap()
+            .then(res => {
+                form.resetFields()
+                toast.success(res.message)
+            }).catch(err => {
+                toast.error(err?.data?.message)
+            }).finally(() => {
+                closeModal()
+            })
     };
     return (
         <Form
             layout='vertical'
             onFinish={onFinish}
             autoComplete="off"
+            form={form}
         >
             <div className='grid grid-cols-2 gap-2'>
                 <Form.Item
-                    label="Salon name"
+                    label="First name"
                     name="name"
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Please input your Salon name!',
+                        },
+                    ]}
+                >
+                    <Input />
+                </Form.Item>
+                <Form.Item
+                    label="Last Name"
+                    name="last_name"
                     rules={[
                         {
                             required: true,
@@ -45,18 +72,6 @@ const CreateSalonForm = () => {
                         {
                             required: true,
                             message: 'Please input your Email!',
-                        },
-                    ]}
-                >
-                    <Input />
-                </Form.Item>
-                <Form.Item
-                    label="Salon location"
-                    name="address"
-                    rules={[
-                        {
-                            required: true,
-                            message: 'Please input your Salon location!',
                         },
                     ]}
                 >
@@ -166,12 +181,25 @@ const CreateSalonForm = () => {
                     ]}
                 >
                     <div className='relative'>
-                        <Input type={passwordInputType} className='w-full' />
+                        <Input type={CpasswordInputType} className='w-full' />
                         {
                             CpasswordInputType == 'password' ? <button onClick={() => setCPasswordInputType('text')} type='button' className='absolute right-2 top-[50%] translate-y-[-50%]'><FaEyeSlash /></button> : <button onClick={() => setCPasswordInputType('password')} type='button' className='absolute right-2 top-[50%] translate-y-[-50%]'> <FaEye /></button>
                         }
 
                     </div>
+                </Form.Item>
+                <Form.Item
+                    className='col-span-2'
+                    label="Salon location"
+                    name="address"
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Please input your Salon location!',
+                        },
+                    ]}
+                >
+                    <Input />
                 </Form.Item>
             </div>
 

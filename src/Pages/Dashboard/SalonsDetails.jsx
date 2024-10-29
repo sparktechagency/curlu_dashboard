@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Calendar, Dropdown, Form, Input, Modal, Select, Slider, Table, Button, Checkbox, } from 'antd';
-import { FaPlus, FaRegFilePdf, FaRegTrashCan, FaStar, FaUserCheck } from 'react-icons/fa6';
+import { FaFileExcel, FaPlus, FaRegFilePdf, FaRegTrashCan, FaStar, FaUserCheck } from 'react-icons/fa6';
 import Swal from 'sweetalert2';
 import { GoArrowUpRight } from 'react-icons/go';
 import { TfiReload } from 'react-icons/tfi';
@@ -8,6 +8,7 @@ import { RiVerifiedBadgeFill } from "react-icons/ri";
 import CreateSalonForm from '../../Components/Form/CreateSalonForm';
 import { useGetSalonQuery } from '../../Redux/Apis/salonApis';
 import { imageUrl } from '../../Redux/baseApi';
+import { CSVLink } from 'react-csv';
 
 const SalonsDetails = () => {
     const [value, setValue] = useState(new URLSearchParams(window.location.search).get('date') || new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }));
@@ -15,11 +16,11 @@ const SalonsDetails = () => {
     const [open, setOpen] = useState(false)
     const [openAddSalon, setOpenAddSalon] = useState(false)
     const [selectedData, setSelectedData] = useState({})
-    const { data: salons } = useGetSalonQuery({ page })
+    const [location, setLocation] = useState('')
+    const { data: salons, refetch, isLoading, isFetching } = useGetSalonQuery({ page, location })
     const data = salons?.data?.map((salon, index) => {
         const { user, created_at, id, experience, salon_type, salon_description, id_card, iban_number, kbis, cover_image, ...rest } = salon;
         const { name, last_name, email, address, phone, image, ...userRest } = user;
-
         return {
             key: index + 1,
             name: `${name} ${last_name}`,
@@ -130,6 +131,20 @@ const SalonsDetails = () => {
     const handleChange = (value) => {
         console.log(`selected ${value}`);
     };
+    const csvData = salons?.data?.map((salon, index) => {
+        const { user, created_at, id, experience, salon_type, salon_description, id_card, iban_number, kbis, cover_image, ...rest } = salon;
+        const { name, last_name, email, address, phone, image, ...userRest } = user;
+        return {
+            key: index + 1,
+            name: `${name} ${last_name}`,
+            email: email,
+            date: new Date(created_at).toLocaleString('en-US', { month: 'short', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }),  // Format creation date
+            location: address || "Unknown",
+            contact: phone || "No contact",
+            img: image ? `${imageUrl}${image}` : "https://i.ibb.co/B2xfD8H/images.png",
+            cover_image: cover_image ? `${imageUrl}${cover_image}` : "https://i.ibb.co/CBvrNxh/Rectangle-5252.png",
+        }
+    })
     return (
         <div style={{
             background: "white",
@@ -141,42 +156,29 @@ const SalonsDetails = () => {
             >
                 <h1 style={{ fontSize: "20px", fontWeight: 600, color: "#2F2F2F" }}>All salon list</h1>
                 <div className='flex justify-end items-center gap-3'>
-                    <button className='text-2xl'>
-                        <FaRegFilePdf />
-                    </button>
-                    <Select className='min-w-44 h-[40px]'
-                        onChange={handleChange}
+                    <CSVLink data={csvData || []}>
+                        <button className='text-2xl'>
+                            <FaFileExcel />
+                        </button>
+                    </CSVLink >
+                    <Input className='min-w-44 h-[40px]'
+                        onChange={(e) => setLocation(e.target.value)}
                         showSearch
                         placeholder="location"
-                        filterOption={(input, option) =>
-                            (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                        }
-                        options={[
-                            {
-                                value: '1',
-                                label: 'Jack',
-                            },
-                            {
-                                value: '2',
-                                label: 'Lucy',
-                            },
-                            {
-                                value: '3',
-                                label: 'Tom',
-                            },
-                        ]}
+
                     />
-                    <button onClick={() => setOpenAddSalon(true)} className='flex justify-start items-center gap-2 text-white p-2 rounded-md bg-[#734D2C]'>
+                    <button onClick={() => setOpenAddSalon(true)} className='flex justify-start items-center gap-2 text-white p-2 rounded-md bg-[#734D2C] whitespace-nowrap'>
                         <FaPlus />
                         Add Salon
                     </button>
-                    <button className='p-2 text-lg text-white bg-[#F27405] rounded-md'>
+                    <button onClick={refetch} className='p-2 text-lg text-white bg-[#F27405] rounded-md'>
                         <TfiReload />
                     </button>
                 </div>
             </div>
             <div>
                 <Table
+                    loading={isLoading || isFetching}
                     columns={columns}
                     dataSource={data}
                     pagination={{
@@ -270,7 +272,7 @@ const SalonsDetails = () => {
             >
                 <div className='bg-white p-6 rounded-md'>
                     <p className='text-[#F27405] text-lg font-medium'>Add Salon</p>
-                    <CreateSalonForm />
+                    <CreateSalonForm closeModal={() => setOpenAddSalon(false)} />
                 </div>
             </Modal>
         </div>

@@ -16,7 +16,7 @@ const TotalSellerList = () => {
   const [selectedData, setSelectedData] = useState({})
   const [search, setSearch] = useState('')
   const [open, setOpen] = useState(false)
-  const { data: users, refetch } = useGetUserQuery({ page, location: search })
+  const { data: users, refetch, isLoading, isFetching } = useGetUserQuery({ page, location: search })
 
   const data = users?.data?.map((user, index) => {
     const { name, last_name, email, created_at, address, phone, image, ...rest } = user;
@@ -154,6 +154,7 @@ const TotalSellerList = () => {
       </div>
       <div>
         <Table
+          isLoading={isLoading || isFetching}
           columns={columns}
           dataSource={data}
           pagination={{

@@ -17,11 +17,11 @@ const categoryApi = baseApi.injectEndpoints({
             invalidatesTags: ['Category'],
         }),
         getCategories: builder.query({
-            query: ({ page }) => {
+            query: ({ page,per_page }) => {
                 return {
                     url: 'categories',
                     method: 'GET',
-                    params: { page }
+                    params: { page,per_page }
                 };
             },
             providesTags: ['Category'],
