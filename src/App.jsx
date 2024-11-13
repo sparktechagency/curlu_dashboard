@@ -35,6 +35,7 @@ import PrivacyPolicy from "./Pages/Dashboard/PrivacyPolicy";
 import Terms from "./Pages/Dashboard/Terms";
 import AdminProfile from "./Pages/Dashboard/AdminProfile";
 import Chat from "./Pages/Dashboard/Chat";
+import AdminRoutes from "./providers/AdminRoutes";
 
 function App() {
   return (
@@ -42,7 +43,7 @@ function App() {
       <div className="maincontainer">
         <Router>
           <Routes>
-            <Route exact path="/" element={ <PrivateRoute> <Dashboard /> </PrivateRoute> }>
+            <Route exact path="/" element={<AdminRoutes> <Dashboard /> </AdminRoutes>}>
               <Route path="/" element={<DashboardHome />} />
               <Route path="/notification" element={<Notification />} />
               <Route path="/all-feedback" element={<AllFeedbacks />} />
@@ -66,7 +67,7 @@ function App() {
               <Route path="/chat" element={<Chat />} />
               <Route path="/setting-change-password" element={<ChangePassword />} />
               <Route path="/settings-profile" element={<Profile />} />
-              <Route path="/seller-list" element={<TotalSellerList  />} />
+              <Route path="/seller-list" element={<TotalSellerList />} />
               <Route path="/seller-details/:id" element={<SellerDetails />} />
               <Route path="/seller-product-list" element={<SellerProductList />} />
               <Route path="/emails" element={<Emails />} />

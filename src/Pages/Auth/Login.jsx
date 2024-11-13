@@ -9,11 +9,11 @@ const Login = () => {
   const [loginUser, { isLoading }] = useLoginUserMutation()
   const navigate = useNavigate();
   const onFinish = (values) => {
-    console.log("Received values of form: ", values);
     const formData = MakeFormData(values);
     loginUser(formData)
       .unwrap()
       .then((res) => {
+        console.log(res?.access_token)
         if (res?.access_token) {
           localStorage.setItem('token', JSON.stringify(res?.access_token))
           toast.dismiss()
