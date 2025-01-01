@@ -6,13 +6,12 @@ import { HiLogout } from "react-icons/hi";
 import { LuUser, LuUserPlus } from "react-icons/lu";
 import { TbCategoryMinus, TbShoppingCartDollar } from "react-icons/tb";
 import { MdDashboard } from "react-icons/md";
-import { IoSettings } from "react-icons/io5";
 import { RiNotification2Line, RiChat1Line, RiCopperDiamondLine } from "react-icons/ri";
 const { Header, Sider, Content } = Layout;
 import { IoSettingsOutline } from "react-icons/io5";
 import { MdKeyboardArrowRight } from "react-icons/md";
 import { MdKeyboardArrowDown } from "react-icons/md";
-import { FaFileInvoiceDollar, FaFire, FaRuler, FaStore } from "react-icons/fa6";
+import { FaFileInvoiceDollar, FaFire, FaRuler, FaStore, FaUserPlus } from "react-icons/fa6";
 import { TiShoppingCart } from "react-icons/ti";
 import { IoIosChatbubbles, IoMdNotificationsOutline } from "react-icons/io";
 import { useGetProfileQuery } from "../../Redux/Apis/authApis";
@@ -77,6 +76,11 @@ const Dashboard = () => {
       title: "Salon Invoice",
       path: "/salon-invoice",
       icon: <FaFileInvoiceDollar size={24} />,
+    },
+    {
+      title: "Make Admin",
+      path: "/make-admin",
+      icon: <FaUserPlus size={24} />,
     },
     {
       title: "Notifications",

@@ -13,32 +13,30 @@ import { Link } from "react-router-dom";
 import salon from '../../../assets/salon.png'
 import earning from '../../../assets/earning.png'
 import TotalSalonstatistics from "./TotalSalonstatistics";
-import platform from 'platform';
+import { useDashboardDataQuery } from "../../../Redux/Apis/aboutApis";
+import ActiveUserOverview from "./ActiveUserOverview";
 function DashboardHome() {
-  const onChange = (pageNumber) => {
-    console.log("Page: ", pageNumber);
-  };
-
+  const { data :dashboardData} = useDashboardDataQuery()
   const data = [
     {
       name: "Total User",
-      count: "20.10K",
+      count: dashboardData?.total_user,
       icon: <HiUserGroup color="#F27405" size={32} />,
       color: "#F27405",
       bgColor: "#E2F7FC",
       extra: 'Daily user',
-      extracount: 200
+      extracount: dashboardData?.daily_user
     },
     {
       name: "Total Salon",
-      count: "320",
+      count: dashboardData?.total_salon,
       color: "#734D2C",
       icon: <img src={salon} alt="" />,
       bgColor: "#FFE3C7"
     },
     {
       name: "Total Seller",
-      count: "120",
+      count: dashboardData?.total_earning,
       color: '#00B047',
       icon: <img src={earning} alt="" />,
       bgColor: "#FFF3D6"
@@ -90,18 +88,18 @@ function DashboardHome() {
             padding: "10px 20px 20px 20px"
           }}
         >
-          <TotalSellerChart />
+          <TotalSellerChart chartData={dashboardData?.app_users} />
         </div>
         <div className="w-full h-full" style={{ borderRadius: "15px", padding: "20px", backgroundColor: "#fff" }}>
-          <DailyOverviewChart />
+        <ActiveUserOverview chartData={dashboardData?.active_users} /> 
         </div>
       </div>
       <div className="grid grid-cols-2 gap-6 items-center justify-start">
         <div className="w-full h-full" style={{ borderRadius: "15px", padding: "20px", backgroundColor: "#fff" }}>
-          <TotalSalonstatistics />
+        <DailyOverviewChart chartData={dashboardData?.total_earning_growth} />
         </div>
         <div className="w-full h-full overflow-x-scroll bg-white rounded-2xl">
-          <TotalSellerListTable />
+        <TotalSalonstatistics chartData={dashboardData?.total_salon_statistic} />
         </div>
       </div>
       <div style={{ marginTop: "20px", marginBottom: "15px", display: "grid", gridTemplateColumns: "auto auto auto", gap: "20px" }} >

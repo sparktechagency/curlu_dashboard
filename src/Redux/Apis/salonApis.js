@@ -44,6 +44,15 @@ const salonApi = baseApi.injectEndpoints({
             }),
             invalidatesTags: ['salonService'],
         }),
+        blockUnblock: builder.mutation({
+            query: (id) => {
+                return {
+                    url: `salon-status/${id}`,
+                    method: 'PUT',
+                };
+            },
+            invalidatesTags: ['salon'],
+        }),
     })
 });
 
@@ -51,5 +60,6 @@ export const {
     useGetSalonQuery,
     useCreateSalonMutation,
     useGetSalonServicesQuery,
-    useUpdateSalonServiceStatusMutation
+    useUpdateSalonServiceStatusMutation,
+    useBlockUnblockMutation
 } = salonApi;

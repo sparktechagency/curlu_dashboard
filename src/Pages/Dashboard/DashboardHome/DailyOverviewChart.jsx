@@ -56,7 +56,12 @@ const data = [
 ];
 
 
-export default function DailyRentChart() {
+export default function DailyRentChart({chartData}) {
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May','Jun','Jul','Aug','Sept','Oct','Nov','Dec']
+  const data = chartData?.map((item,i)=>({
+    name:months[i],
+    mt:item?.user
+  })) || []
   const [year, setYear] = useState(2024)
 
   const items = [
@@ -84,7 +89,7 @@ export default function DailyRentChart() {
     <div>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <p style={{ marginTop: "10px", fontSize: "20px", fontWeight: 600, marginBottom: "10px", color: "black", }}>Total earning growth</p>
-        <Dropdown menu={{ items, onClick }} >
+        {/* <Dropdown menu={{ items, onClick }} >
           <p style={{
             // width: "79px", 
             cursor: "pointer",
@@ -97,13 +102,13 @@ export default function DailyRentChart() {
             {year}
             <DownOutlined style={{ paddingLeft: "18px" }} color='#717171' />
           </p>
-        </Dropdown>
+        </Dropdown> */}
       </div>
       <div className='w-full h-[300px]'>
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
-            width={450}
-            height={132}
+            width={500}
+            height={300}
             data={data}
           >
             <XAxis dataKey="name" />

@@ -12,6 +12,7 @@ import {
     useDeleteSliderMutation,
 } from "../../Redux/Apis/sliderSettingApis";
 import { generateImage } from "../../Redux/baseApi";
+import toast from "react-hot-toast";
 
 const SliderSetting = () => {
     const [page, setPage] = useState(1);
@@ -24,7 +25,6 @@ const SliderSetting = () => {
     const [addSlider] = useAddSliderMutation();
     const [updateSlider] = useUpdateSliderMutation();
     const [deleteSlider] = useDeleteSliderMutation();
-
     const [form] = Form.useForm(); // Initialize form instance
 
     const handleAddOrUpdateSlider = async (values) => {
@@ -32,28 +32,39 @@ const SliderSetting = () => {
         formData.append("slider_name", values.slider_name);
         formData.append("slider_image", imgFile);
         formData.append("slider_description", content);
+        setLoading(true);
+        if (selectedSlider) {
+            await updateSlider({ id: selectedSlider.id, sliderData: formData }).unwrap().then(res => {
+                toast.success(res?.message)
+                refetch();
+                setOpenAddModel(false);
+                setSelectedSlider(null);
+                setContent("");
+                setImgFile(null);
+                form.resetFields();
+                setLoading(false);
+            }).catch(err => {
+                toast.error(err?.data?.message)
+                setLoading(false);
+                console.log(err)
+            });
+        } else {
+            await addSlider(formData).unwrap().then(res => {
+                toast.success(res?.message)
+                refetch();
+                setOpenAddModel(false);
+                setSelectedSlider(null);
+                setContent("");
+                setImgFile(null);
+                form.resetFields();
+                setLoading(false);
+            }).catch(err => {
+                setLoading(false);
+                toast.error(err?.data?.message)
+            });
 
-        try {
-            setLoading(true);
-            if (selectedSlider) {
-                await updateSlider({ id: selectedSlider.id, sliderData: formData }).unwrap();
-                Swal.fire("Success", "Slider updated successfully!", "success");
-            } else {
-                await addSlider(formData).unwrap();
-                Swal.fire("Success", "Slider added successfully!", "success");
-            }
-            refetch();
-            setOpenAddModel(false);
-            setSelectedSlider(null);
-            setContent("");
-            setImgFile(null);
-            form.resetFields(); // Reset form after submission
-        } catch (error) {
-            Swal.fire("Error", "Error saving slider. Please try again.", "error");
-            console.error("Error saving slider:", error);
-        } finally {
-            setLoading(false);
         }
+
     };
 
     // Handle delete slider
@@ -141,7 +152,7 @@ const SliderSetting = () => {
                         onClick={() => {
                             setSelectedSlider(null);
                             form.resetFields();
-                            setContent('')
+                            setContent("");
                             setOpenAddModel(true);
                         }}
                         style={{
@@ -157,13 +168,16 @@ const SliderSetting = () => {
                         Add Slider
                     </Button>
                 </div>
-                <Table columns={columns} dataSource={sliders?.data} pagination={{
-                    total: sliders?.total,
-                    pageSize: sliders?.per_page,
-                    onChange: (page) => setPage(page)
-                }} />
+                <Table
+                    columns={columns}
+                    dataSource={sliders?.data}
+                    pagination={{
+                        total: sliders?.total,
+                        pageSize: sliders?.per_page,
+                        onChange: (page) => setPage(page),
+                    }}
+                />
             </div>
-
             <Modal
                 centered
                 visible={openAddModel}
@@ -220,21 +234,26 @@ const SliderSetting = () => {
                         <Form.Item label="Details">
                             <JoditEditor
                                 value={content}
-                                onChange={(newContent) => setContent(newContent)}
+                                onBlur={(newContent) => setContent(newContent)} // Update onBlur instead of onChange
                                 config={{
-                                    height: 100
+                                    height: 100,
                                 }}
                             />
                         </Form.Item>
                         <Form.Item>
-                            <Button style={{
-                                borderRadius: 8,
-                                background: "#F25C05",
-                                height: 40,
-                                color: "white",
-                                fontSize: 14,
-                                fontWeight: "400",
-                            }} type="primary" htmlType="submit" loading={loading}>
+                            <Button
+                                style={{
+                                    borderRadius: 8,
+                                    background: "#F25C05",
+                                    height: 40,
+                                    color: "white",
+                                    fontSize: 14,
+                                    fontWeight: "400",
+                                }}
+                                type="primary"
+                                htmlType="submit"
+                                loading={loading}
+                            >
                                 {selectedSlider ? "Update Slider" : "Add Slider"}
                             </Button>
                         </Form.Item>

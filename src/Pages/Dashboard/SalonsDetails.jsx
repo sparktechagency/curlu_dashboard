@@ -1,23 +1,26 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Calendar, Dropdown, Form, Input, Modal, Select, Slider, Table, Button, Checkbox, } from 'antd';
 import { FaFileExcel, FaPlus, FaRegFilePdf, FaRegTrashCan, FaStar, FaUserCheck } from 'react-icons/fa6';
-import Swal from 'sweetalert2';
 import { GoArrowUpRight } from 'react-icons/go';
 import { TfiReload } from 'react-icons/tfi';
 import { RiVerifiedBadgeFill } from "react-icons/ri";
 import CreateSalonForm from '../../Components/Form/CreateSalonForm';
-import { useGetSalonQuery } from '../../Redux/Apis/salonApis';
+import { useBlockUnblockMutation, useGetSalonQuery } from '../../Redux/Apis/salonApis';
 import { imageUrl } from '../../Redux/baseApi';
 import { CSVLink } from 'react-csv';
+import { TbUserX } from 'react-icons/tb';
+import toast from 'react-hot-toast';
 
 const SalonsDetails = () => {
     const [value, setValue] = useState(new URLSearchParams(window.location.search).get('date') || new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }));
+    const [searchBy, setSearchBy] = useState('')
     const [page, setPage] = useState(new URLSearchParams(window.location.search).get('page') || 1);
     const [open, setOpen] = useState(false)
     const [openAddSalon, setOpenAddSalon] = useState(false)
     const [selectedData, setSelectedData] = useState({})
     const [location, setLocation] = useState('')
     const { data: salons, refetch, isLoading, isFetching } = useGetSalonQuery({ page, location })
+    const [blockUnblock] = useBlockUnblockMutation()
     const data = salons?.data?.map((salon, index) => {
         const { user, created_at, id, experience, salon_type, salon_description, id_card, iban_number, kbis, cover_image, ...rest } = salon;
         const { name, last_name, email, address, phone, image, ...userRest } = user;
@@ -43,42 +46,6 @@ const SalonsDetails = () => {
             }
         };
     });
-    const items = [
-        {
-            label: "Car",
-            key: "Car",
-        },
-        {
-            label: "Bike",
-            key: "Bike",
-        },
-        {
-            label: "Cycle",
-            key: "Cycle",
-        },
-    ];
-
-    const handleDelete = (id) => {
-        Swal.fire({
-            title: "Are you sure?",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes",
-            cancelButtonText: "No"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                Swal.fire({
-                    title: "Deleted!",
-                    text: "Your file has been deleted.",
-                    icon: "success",
-                    showConfirmButton: false,
-                    timer: 1500,
-                });
-            }
-        });
-    }
     const columns = [
         {
             title: "S.No",
@@ -116,7 +83,20 @@ const SalonsDetails = () => {
             render: (_, record) => (
                 <div className='flex justify-start items-center gap-2'>
                     <GoArrowUpRight onClick={() => { setOpen(true); setSelectedData(record) }} className="text-blue-500 text-2xl cursor-pointer" />
-                    <FaUserCheck onClick={() => { }} className="text-green-500 text-2xl cursor-pointer" />
+                    <button onClick={() => {
+                        blockUnblock(record?.rest?.id).unwrap()
+                            .then(res => {
+                                refetch()
+                                toast.success(res.message)
+                            }).catch(err => {
+                                toast.error(err?.data?.message)
+                            })
+                    }} className={`${record?.rest?.user_status == 'inactive' ? 'text-green-500' : 'text-red-500'}  text-2xl cursor-pointer`}>
+                        {
+                            record?.rest?.user_status == 'inactive' ? <FaUserCheck /> : <TbUserX />
+                        }
+
+                    </button>
                 </div>
             ),
         },
@@ -161,7 +141,17 @@ const SalonsDetails = () => {
                             <FaFileExcel />
                         </button>
                     </CSVLink >
-                    <Input className='min-w-44 h-[40px]'
+                    <Select
+                        placeholder='search by'
+                        onChange={(value) => setSearchBy(searchBy)}
+                        className='min-w-44 h-[40px]'
+                        options={[
+                            { label: 'name', value: 'name' },
+                            { label: 'email', value: 'email' },
+                            { label: 'location', value: 'location' },
+                        ]}
+                    />
+                    <Input className='h-[40px]'
                         onChange={(e) => setLocation(e.target.value)}
                         showSearch
                         placeholder="location"

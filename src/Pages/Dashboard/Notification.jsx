@@ -1,21 +1,11 @@
 import { Modal } from 'antd';
 import React, { useState } from 'react'
+import { useNotificationsDataQuery } from '../../Redux/Apis/aboutApis';
 
-const data = [
-    {
-      key: "1",
-      title: "Tushar ",
-      email: "tushar@gmail.com",
-      date: "18 Jul, 2023  4:30pm",
-      item: "Banasree",
-      status: false,
-      price: "500",
-      balance: "600",
-      image: "https://img.freepik.com/free-photo/everything-is-okay-cheerful-friendly-looking-caucasian-guy-with-moustache-beard-raising-hand-with-ok-great-gesture-giving-approval-like-having-situation-control_176420-22386.jpg"
-    },
-];
+
 const Notification = () => {
   const [page, setPage] = useState( new URLSearchParams(window.location.search).get('page') || 1);
+  const {data}=useNotificationsDataQuery()
   const handlePageChange=(page)=>{
     setPage(page);
     const params = new URLSearchParams(window.location.search);
@@ -39,21 +29,21 @@ const Notification = () => {
         </button>
       </div>
       <div className="flex justify-start items-start flex-col gap-2 py-8 px-3">
-        {data.map((item) => (
+        {data?.notification?.map((item) => (
           <div
-            className={`flex justify-between items-center w-full ${item?.status ? "bg-[#FBFBFB]" : " bg-[#F8F1E6]"
+            className={`flex justify-between items-center w-full ${item?.read_at ? "bg-[#FBFBFB]" : " bg-[#F8F1E6]"
               } p-3 py-5 rounded-lg`}
-            key={item?.key}
+            key={item?.id}
           >
             <div>
               <div className="flex justify-start items-center gap-8 mb-1 text-[#919191]">
-                <h3 className="text-[#555555] font-bold">{item?.title}</h3>
-                <p>{item?.date}</p>
+                <h3 className="text-[#555555] font-bold">{item?.message}</h3>
+                <p>{item?.created_at?.split('T')?.[0]}</p>
               </div>
-              <div className="flex justify-start items-center gap-2 text-[#919191]">
+              {/* <div className="flex justify-start items-center gap-2 text-[#919191]">
                 <h3>{item?.item}</h3>
                 <p>{item?.price}</p>
-              </div>
+              </div> */}
             </div>
             <button
               onClick={() => {

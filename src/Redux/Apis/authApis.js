@@ -83,6 +83,10 @@ const authApi = baseApi.injectEndpoints({
                     return {
                         url: 'profile',
                         method: 'GET',
+                        headers: {
+                            'Accept': "application/json",
+                            Authorization: `Bearer ${JSON.parse((localStorage.getItem('token'))) || ""}`,
+                        }
                     };
                 } else {
                     console.log('No token found, API not called.');

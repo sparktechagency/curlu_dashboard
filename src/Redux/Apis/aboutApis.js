@@ -81,6 +81,12 @@ const aboutUsApi = baseApi.injectEndpoints({
             query: (id) => ({ url: `faqs/${id}`, method: 'DELETE' }),
             invalidatesTags: ['faq']
         }),
+        dashboardData: builder.query({
+            query: () => `/dashboard`
+        }),
+        notificationsData: builder.query({
+            query: () => `/notifications`
+        })
     }),
 });
 
@@ -93,5 +99,7 @@ export const {
     useAddTermsMutation,
     useAddFaqMutation,
     useGetFaqsQuery,
-    useDeleteFaqsMutation
+    useDeleteFaqsMutation,
+    useDashboardDataQuery,
+    useNotificationsDataQuery
 } = aboutUsApi;

@@ -12,10 +12,20 @@ const userApi = baseApi.injectEndpoints({
             },
             providesTags: ['user'],
         }),
+        blockUnblock: builder.mutation({
+            query: (id) => {
+                return {
+                    url: `user-status/${id}`,
+                    method: 'PUT',
+                };
+            },
+            invalidatesTags: ['user'],
+        }),
 
     })
 });
 
 export const {
-    useGetUserQuery
+    useGetUserQuery,
+    useBlockUnblockMutation
 } = userApi;

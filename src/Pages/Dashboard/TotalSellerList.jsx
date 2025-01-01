@@ -4,10 +4,12 @@ import { FaFileExcel, FaRegFilePdf, FaRegTrashCan, FaUserCheck } from 'react-ico
 import Swal from 'sweetalert2';
 import { GoArrowUpRight } from 'react-icons/go';
 import { TfiReload } from 'react-icons/tfi';
-import { useGetUserQuery } from '../../Redux/Apis/userApi';
+import { useBlockUnblockMutation, useGetUserQuery } from '../../Redux/Apis/userApi';
 import { imageUrl } from '../../Redux/baseApi';
 import { FaSearch } from 'react-icons/fa';
 import { CSVDownload, CSVLink } from 'react-csv';
+import toast from 'react-hot-toast';
+import { TbUserX } from 'react-icons/tb';
 
 
 const TotalSellerList = () => {
@@ -17,7 +19,7 @@ const TotalSellerList = () => {
   const [search, setSearch] = useState('')
   const [open, setOpen] = useState(false)
   const { data: users, refetch, isLoading, isFetching } = useGetUserQuery({ page, location: search })
-
+  const [blockUnblock] = useBlockUnblockMutation()
   const data = users?.data?.map((user, index) => {
     const { name, last_name, email, created_at, address, phone, image, ...rest } = user;
     return {
@@ -65,7 +67,7 @@ const TotalSellerList = () => {
       }
     });
   }
-
+  console.log(data)
   const columns = [
     {
       title: "S.No",
@@ -108,7 +110,19 @@ const TotalSellerList = () => {
       render: (_, record) => (
         <div className='flex justify-start items-center gap-2'>
           <GoArrowUpRight onClick={() => { setOpen(true); setSelectedData(record) }} className="text-blue-500 text-2xl cursor-pointer" />
-          <FaUserCheck onClick={() => { }} className="text-green-500 text-2xl cursor-pointer" />
+          <button onClick={() => {
+            blockUnblock(record?.rest?.id).unwrap()
+              .then(res => {
+                toast.success(res.message)
+              }).catch(err => {
+                toast.error(err?.data?.message)
+              })
+          }} className={`${record?.rest?.user_status == 'inactive'?'text-green-500':'text-red-500'}  text-2xl cursor-pointer`}>
+            {
+              record?.rest?.user_status == 'inactive' ? <FaUserCheck /> : <TbUserX />
+            }
+
+          </button>
         </div>
       ),
     },

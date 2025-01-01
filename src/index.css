@@ -96,37 +96,37 @@ div:where(.swal2-container) button:where(.swal2-styled).swal2-confirm {
   padding: 0 !important;
 }
 .jodit-toolbar-button.jodit-toolbar-button_size_middle.jodit-toolbar-button_variant_initial.jodit-toolbar-button_font.jodit-toolbar-button_with-trigger_true.jodit-ui-group__font {
-  display: none;
+  display: none ;
 }
 
 .jodit-ui-group.jodit-ui-group_separated_true.jodit-ui-group_group_list.jodit-ui-group_size_middle {
-  display: none;
+  display: none !important;
 }
 
 .jodit-ui-spacer {
-  display: none;
+  display: none !important;
 }
 
 .jodit-ui-group.jodit-ui-group_separated_true.jodit-ui-group_group_media.jodit-ui-group_size_middle {
-  display: none;
+  display: none !important;
 }
 .jodit-ui-group.jodit-ui-group_separated_true.jodit-ui-group_group_state.jodit-ui-group_size_middle{
-display: none;
+display: none !important;
 }
 .jodit-ui-group.jodit-ui-group_separated_true.jodit-ui-group_group_insert.jodit-ui-group_size_middle{
-display: none;
+display: none !important;
 }
 .jodit-ui-group.jodit-ui-group_separated_true.jodit-ui-group_group_indent.jodit-ui-group_size_middle{
-display: none;
+display: none !important;
 }
 .jodit-ui-group.jodit-ui-group_separated_true.jodit-ui-group_group_color.jodit-ui-group_before-spacer_true.jodit-ui-group_size_middle{
-display: none;
+display: none !important;
 }
 .jodit-ui-group.jodit-ui-group_separated_true.jodit-ui-group_group_history.jodit-ui-group_size_middle{
-  display: none;
+  display: none !important;
 }
 .jodit-ui-group.jodit-ui-group_separated_true.jodit-ui-group_group_other.jodit-ui-group_size_middle{
-display: none;
+display: none !important;
 }
 .jodit-status-bar{
   display: none !important;
