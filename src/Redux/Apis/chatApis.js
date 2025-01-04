@@ -3,7 +3,7 @@ import { baseApi } from "../baseApi";
 const chatApis = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         getChatList: builder.query({
-            query: ({ search }) => `/chat-list?search=${search || ""}`,
+            query: ({ search, role_type }) => `/chat-list?role_type=${role_type}&search=${search || ""}`,
         }),
         getMessage: builder.query({
             query: ({ receiver_id }) => `/get-message?receiver_id=${receiver_id}`,

@@ -10,12 +10,14 @@ import {
   useSendMessageMutation,
 } from "../../Redux/Apis/chatApis";
 import { generateImage } from "../../Redux/baseApi";
+import { useSocket } from "../../Context/Context";
 
 const Chat = () => {
+  const [tab, setTab] = useState("USER"); //PROFESSIONAL
   const [message, setMessage] = useState("");
   const scrollRef = useRef();
   const [keyword, setKeyword] = useState("");
-  const { data } = useGetChatListQuery({ search: keyword });
+  const { data } = useGetChatListQuery({ search: keyword, role_type: tab });
   const [partnerId, setPartnerId] = useState(
     data?.chat_list?.[0]?.receiver?.id
   );
@@ -23,6 +25,9 @@ const Chat = () => {
     receiver_id: partnerId || data?.chat_list?.[0]?.receiver?.id,
   });
   const [send] = useSendMessageMutation();
+
+  const { socket } = useSocket();
+
   const [allChats, setAllChats] = useState(chat || []);
   useEffect(() => {
     if (data) {
@@ -45,7 +50,6 @@ const Chat = () => {
   const handlePartner = (patient) => {
     setPartnerId(patient?.receiver?.id);
   };
-
   return (
     <div className="bg-white shadow-lg rounded-lg p-6 h-[86vh] overflow-hidden">
       {/* helmet */}
@@ -67,6 +71,22 @@ const Chat = () => {
               "rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px",
           }}
         >
+          <div className="flex justify-start items-center gap-3 mb-3">
+            <button
+              onClick={() => setTab("USER")}
+              className={`${tab == "USER" ? "text-orange-500 underline" : ""}`}
+            >
+              user
+            </button>
+            <button
+              onClick={() => setTab("PROFESSIONAL")}
+              className={`${
+                tab == "PROFESSIONAL" ? "text-orange-500 underline" : ""
+              }`}
+            >
+              professional
+            </button>
+          </div>
           <div>
             <Input
               onChange={(e) => setKeyword(e.target.value)}
