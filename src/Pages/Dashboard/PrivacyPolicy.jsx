@@ -18,7 +18,6 @@ const PrivacyPolicy = () => {
         },
     };
     const handlePrivacy = () => {
-        // console.log(content)
         const data = {
             description: content,
             title: 'Privacy Policy',
@@ -27,9 +26,7 @@ const PrivacyPolicy = () => {
         const formData = MakeFormData(data)
         postPrivacy(formData).unwrap().then(res => {
             toast.success(res?.message)
-            console.log(res)
         }).catch(err => {
-            console.log(err)
             toast.error(err.data?.message)
         })
     }

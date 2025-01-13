@@ -67,7 +67,6 @@ const TotalSellerList = () => {
       }
     });
   }
-  console.log(data)
   const columns = [
     {
       title: "S.No",
@@ -142,7 +141,6 @@ const TotalSellerList = () => {
     window.history.pushState(null, "", `?${params.toString()}`);
   };
   const handleChange = (value) => {
-    console.log(`selected ${value}`);
   };
   return (
     <div style={{

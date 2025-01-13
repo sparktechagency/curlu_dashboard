@@ -53,7 +53,6 @@ const ServicesCategory = () => {
             }
         });
     };
-    // console.log(categoriesData)
     const categories = categoriesData?.data?.map((category, index) => ({
         key: index + 1 + ((categoriesData?.current_page - 1) * categoriesData?.per_page),
         name: category.category_name,

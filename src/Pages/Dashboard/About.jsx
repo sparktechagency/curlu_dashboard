@@ -18,7 +18,6 @@ const About = () => {
     },
   };
   const handleAboutUs = () => {
-    // console.log(content)
     const data = {
       description: content,
       title: 'About Us',
@@ -27,9 +26,7 @@ const About = () => {
     const formData = MakeFormData(data)
     postAboutUS(formData).unwrap().then(res => {
       toast.success(res?.message)
-      console.log(res)
     }).catch(err => {
-      console.log(err)
       toast.error(err.data?.message)
     })
   }

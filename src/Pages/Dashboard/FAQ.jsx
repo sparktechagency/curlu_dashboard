@@ -71,9 +71,7 @@ const FAQ = () => {
       toast.success(res?.message)
       e.target.reset()
       setOpenAddModel(false)
-      console.log(res)
     }).catch(err => {
-      console.log(err)
       toast.error(err.data?.message)
     })
     // add faq
@@ -83,16 +81,13 @@ const FAQ = () => {
     e.preventDefault();
     const ans = e.target.ans.value
     // const question = e.target.ans.question
-    console.log(ans, question)
   };
   // delete faqs 
   const handleDelete = () => {
     deleteFaq(deleteId).unwrap().then(res => {
       setShowDelete(false)
       toast.success(res?.message)
-      console.log(res)
     }).catch(err => {
-      console.log(err)
       toast.error(err.data?.message)
     })
   }

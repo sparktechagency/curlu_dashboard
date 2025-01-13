@@ -36,7 +36,7 @@ const CreateProductForm = ({ closeModal, initialValues = {} }) => {
                 closeModal();
             }
         } catch (error) {
-            console.log(error)
+
             Swal.fire("Error!", error?.data?.message, "error");
         }
     };

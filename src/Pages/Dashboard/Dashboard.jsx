@@ -20,7 +20,6 @@ const Dashboard = () => {
   const { pathname } = useLocation();
   const { data } = useGetProfileQuery()
   const navigate = useNavigate();
-  console.log(data)
   const handleLogOut = () => {
     navigate('/login');
     window.location.reload();

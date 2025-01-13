@@ -1,7 +1,6 @@
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import moment from "moment";
-import { GoArrowUpRight, GoSearch } from "react-icons/go";
-import { CiImageOn } from "react-icons/ci";
+import { GoSearch } from "react-icons/go";
 import { Input, Spin } from "antd";
 import { FaLocationArrow } from "react-icons/fa6";
 import {
@@ -11,7 +10,6 @@ import {
 } from "../../Redux/Apis/chatApis";
 import { generateImage } from "../../Redux/baseApi";
 import { useSocket } from "../../Context/Context";
-
 const Chat = () => {
   const [tab, setTab] = useState("USER"); //PROFESSIONAL
   const [message, setMessage] = useState("");
@@ -41,6 +39,7 @@ const Chat = () => {
   }, [chat]);
 
   const [messageList, setMessageList] = useState([]);
+
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -50,6 +49,19 @@ const Chat = () => {
   const handlePartner = (patient) => {
     setPartnerId(patient?.receiver?.id);
   };
+
+  useEffect(() => {
+    const handleNewMessage = (data) => {
+      setAllChats([...allChats, data]);
+    };
+    if (socket) {
+      socket.on("private-message", handleNewMessage);
+    }
+    return () => {
+      socket.off("private-message", handleNewMessage);
+    };
+  }, [socket]);
+
   return (
     <div className="bg-white shadow-lg rounded-lg p-6 h-[86vh] overflow-hidden">
       {/* helmet */}
@@ -176,6 +188,7 @@ const Chat = () => {
             <Input
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Type your message"
+              value={message}
               className="bg-white"
               style={{
                 borderRadius: "16px",
@@ -183,7 +196,15 @@ const Chat = () => {
               suffix={
                 <button
                   onClick={() => {
-                    send({ receiver_id: partnerId, message });
+                    send({ receiver_id: partnerId, message })
+                      .unwrap()
+                      .then(() => {
+                        setMessage("");
+                        socket.emit("private-message", {
+                          receiverId: "23", // partnerId,
+                          message,
+                        });
+                      });
                   }}
                   className="text-xl p-2 cursor-pointer rounded-full bg-[#F27405] text-white"
                 >

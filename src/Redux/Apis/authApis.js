@@ -89,7 +89,6 @@ const authApi = baseApi.injectEndpoints({
                         }
                     };
                 } else {
-                    console.log('No token found, API not called.');
                     return null;
                 }
             },

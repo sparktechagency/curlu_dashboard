@@ -1,9 +1,7 @@
-import { RiEditLine } from "react-icons/ri";
+
 import { useEffect, useState } from "react";
-import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import { Button, Form, Input } from "antd";
 import { CiEdit } from "react-icons/ci";
-import Swal from "sweetalert2";
 import { useChangePasswordMutation, useGetProfileQuery, useUpdateUserMutation } from "../../Redux/Apis/authApis";
 import { MakeFormData } from "../../Util/MakeFormData";
 import toast from "react-hot-toast";
@@ -22,7 +20,6 @@ const AdminProfile = () => {
     params.set('tab', tab);
     window.history.pushState(null, "", `?${params.toString()}`);
   };
-  console.log(profile?.user)
   const handleChange = (e) => {
     const file = e.target.files[0];
     setImage(file)

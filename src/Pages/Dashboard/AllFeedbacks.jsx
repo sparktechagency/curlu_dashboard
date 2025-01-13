@@ -87,13 +87,10 @@ const AllFeedbacks = () => {
         window.history.pushState(null, "", `?${params.toString()}`);
     }
     const handleChange = (value) => {
-        console.log(`selected ${value}`);
     };
     const onChange = (date, dateString) => {
-        console.log(date, dateString);
     };
     const handleLocationChange = (value) => {
-        console.log(`selected ${value}`);
     };
     return (
         <div style={{ height: "fit-content", borderRadius: "8px", background: "white", padding: "15px 24px 0 24px" }}>

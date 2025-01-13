@@ -32,7 +32,7 @@ const CreateSalonCategoryFrom = ({ create, setOpenAddSalon, setSelectedCategory,
                 .catch((err) => {
                     toast.dismiss()
                     toast.error(err?.data?.message || 'Something Went Wrong')
-                    console.log(err);
+
                 });
         } else {
             if (image?.idCard) {
@@ -51,7 +51,7 @@ const CreateSalonCategoryFrom = ({ create, setOpenAddSalon, setSelectedCategory,
                 .catch((err) => {
                     toast.dismiss()
                     toast.error(err?.data?.message || 'Something Went Wrong')
-                    console.log(err);
+
                 });
         }
 

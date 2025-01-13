@@ -7,7 +7,6 @@ const ForgotPassword = () => {
   const navigate = useNavigate();
   const onFinish = (values) => {
     localStorage.setItem("email", JSON.stringify(values.email))
-    console.log("Received values of form: ", values.email);
     Swal.fire({
       position: "center",
       icon: "success",

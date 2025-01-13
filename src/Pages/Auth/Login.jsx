@@ -6,29 +6,25 @@ import { MakeFormData } from "../../Util/MakeFormData";
 import { useLoginUserMutation } from "../../Redux/Apis/authApis";
 import toast from "react-hot-toast";
 const Login = () => {
-  const [loginUser, { isLoading }] = useLoginUserMutation()
+  const [loginUser, { isLoading }] = useLoginUserMutation();
   const navigate = useNavigate();
   const onFinish = (values) => {
     const formData = MakeFormData(values);
     loginUser(formData)
       .unwrap()
       .then((res) => {
-        console.log(res?.access_token)
         if (res?.access_token) {
-          localStorage.setItem('token', JSON.stringify(res?.access_token))
-          toast.dismiss()
-          toast.success('Logged In SuccessFully')
-          navigate('/')
+          localStorage.setItem("token", JSON.stringify(res?.access_token));
+          toast.dismiss();
+          toast.success("Logged In SuccessFully");
+          window.location.href = "/";
         }
       })
       .catch((err) => {
-        toast.dismiss()
-        toast.error(err?.data?.message || 'Your Credentials Is Wrong')
-        console.log(err);
+        toast.dismiss();
+        toast.error(err?.data?.message || "Your Credentials Is Wrong");
       });
   };
-
-
 
   return (
     <div
@@ -37,7 +33,7 @@ const Login = () => {
         height: "100vh",
         display: "flex",
         alignItems: "center",
-        justifyContent: "center"
+        justifyContent: "center",
       }}
     >
       <Form
@@ -46,12 +42,26 @@ const Login = () => {
         initialValues={{
           remember: true,
         }}
-        style={{ width: "630px", background: "white", borderRadius: "12px", padding: "90px 57px", boxShadow: 'rgba(0, 0, 0, 0.35) 0px 5px 15px' }}
+        style={{
+          width: "630px",
+          background: "white",
+          borderRadius: "12px",
+          padding: "90px 57px",
+          boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px",
+        }}
         onFinish={onFinish}
       >
-        <h1 style={{ fontSize: "32px", color: "#6A6D7C", textAlign: "center" }}>Login in to Account</h1>
+        <h1 style={{ fontSize: "32px", color: "#6A6D7C", textAlign: "center" }}>
+          Login in to Account
+        </h1>
         <div style={{ marginBottom: "24px" }}>
-          <label htmlFor="email" style={{ display: "block", marginBottom: "5px" }}> Email </label>
+          <label
+            htmlFor="email"
+            style={{ display: "block", marginBottom: "5px" }}
+          >
+            {" "}
+            Email{" "}
+          </label>
           <Form.Item
             style={{ marginBottom: 0 }}
             name="email"
@@ -73,13 +83,17 @@ const Login = () => {
                 borderRadius: "8px",
                 outline: "none",
               }}
-
             />
           </Form.Item>
         </div>
 
         <div style={{ marginBottom: "24px" }}>
-          <label style={{ display: "block", marginBottom: "5px" }} htmlFor="password">Password</label>
+          <label
+            style={{ display: "block", marginBottom: "5px" }}
+            htmlFor="password"
+          >
+            Password
+          </label>
           <Form.Item
             style={{ marginBottom: 0 }}
             name="password"
@@ -104,8 +118,13 @@ const Login = () => {
           </Form.Item>
         </div>
 
-
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
           <Form.Item name="remember" valuePropName="checked" noStyle>
             <Checkbox style={{ color: "#6A6D7C" }}>Remember me</Checkbox>
           </Form.Item>
@@ -118,10 +137,9 @@ const Login = () => {
           </a>
         </div>
 
-        <Form.Item
-          style={{ marginBottom: 0 }}
-        >
-          <Button disabled={isLoading}
+        <Form.Item style={{ marginBottom: 0 }}>
+          <Button
+            disabled={isLoading}
             type="primary"
             htmlType="submit"
             className="login-form-button"

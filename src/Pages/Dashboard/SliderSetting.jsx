@@ -46,7 +46,6 @@ const SliderSetting = () => {
             }).catch(err => {
                 toast.error(err?.data?.message)
                 setLoading(false);
-                console.log(err)
             });
         } else {
             await addSlider(formData).unwrap().then(res => {

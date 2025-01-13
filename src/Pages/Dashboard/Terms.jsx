@@ -18,7 +18,6 @@ const Terms = () => {
         },
     };
     const handleTerms = () => {
-        // console.log(content)
         const data = {
             description: content,
             title: 'About Us',
@@ -27,9 +26,7 @@ const Terms = () => {
         const formData = MakeFormData(data)
         postTerms(formData).unwrap().then(res => {
             toast.success(res?.message)
-            console.log(res)
         }).catch(err => {
-            console.log(err)
             toast.error(err.data?.message)
         })
     }

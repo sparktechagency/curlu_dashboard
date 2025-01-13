@@ -109,7 +109,6 @@ const SalonsDetails = () => {
         window.history.pushState(null, "", `?${params.toString()}`);
     }
     const handleChange = (value) => {
-        console.log(`selected ${value}`);
     };
     const csvData = salons?.data?.map((salon, index) => {
         const { user, created_at, id, experience, salon_type, salon_description, id_card, iban_number, kbis, cover_image, ...rest } = salon;

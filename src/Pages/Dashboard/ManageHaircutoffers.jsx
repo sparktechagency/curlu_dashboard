@@ -114,7 +114,6 @@ const ManageHaircutoffers = () => {
         window.history.pushState(null, "", `?${params.toString()}`);
     }
     const handleChange = (value) => {
-        console.log(`selected ${value}`);
     };
     return (
         <div style={{
