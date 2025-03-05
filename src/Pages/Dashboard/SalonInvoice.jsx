@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Input, Table, Select } from 'antd';
-import { FaRegFilePdf } from 'react-icons/fa6';
 import { TfiReload } from 'react-icons/tfi';
 import { FiSearch } from 'react-icons/fi';
 import { IoClose } from 'react-icons/io5';

@@ -1,20 +1,20 @@
-import { useEffect, useRef, useState } from "react";
-import moment from "moment";
-import { GoSearch } from "react-icons/go";
-import { Input, Spin } from "antd";
-import { FaLocationArrow } from "react-icons/fa6";
+import { useEffect, useRef, useState } from 'react';
+import moment from 'moment';
+import { GoSearch } from 'react-icons/go';
+import { Input, Spin } from 'antd';
+import { FaLocationArrow } from 'react-icons/fa6';
 import {
   useGetChatListQuery,
   useGetMessageQuery,
   useSendMessageMutation,
-} from "../../Redux/Apis/chatApis";
-import { generateImage } from "../../Redux/baseApi";
-import { useSocket } from "../../Context/Context";
+} from '../../Redux/Apis/chatApis';
+import { generateImage } from '../../Redux/baseApi';
+import { useSocket } from '../../Context/Context';
 const Chat = () => {
-  const [tab, setTab] = useState("USER"); //PROFESSIONAL
-  const [message, setMessage] = useState("");
+  const [tab, setTab] = useState('USER'); //PROFESSIONAL
+  const [message, setMessage] = useState('');
   const scrollRef = useRef();
-  const [keyword, setKeyword] = useState("");
+  const [keyword, setKeyword] = useState('');
   const { data } = useGetChatListQuery({ search: keyword, role_type: tab });
   const [partnerId, setPartnerId] = useState(
     data?.chat_list?.[0]?.receiver?.id
@@ -55,10 +55,10 @@ const Chat = () => {
       setAllChats([...allChats, data]);
     };
     if (socket) {
-      socket.on("private-message", handleNewMessage);
+      socket?.on('private-message', handleNewMessage);
     }
     return () => {
-      socket.off("private-message", handleNewMessage);
+      socket?.off('private-message', handleNewMessage);
     };
   }, [socket]);
 
@@ -80,20 +80,20 @@ const Chat = () => {
           className="col-span-3 w-full bg-[#FCFCFC]  rounded-lg p-4 overflow-y-scroll scroll-bar"
           style={{
             boxShadow:
-              "rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px",
+              'rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px',
           }}
         >
           <div className="flex justify-start items-center gap-3 mb-3">
             <button
-              onClick={() => setTab("USER")}
-              className={`${tab == "USER" ? "text-orange-500 underline" : ""}`}
+              onClick={() => setTab('USER')}
+              className={`${tab == 'USER' ? 'text-orange-500 underline' : ''}`}
             >
               user
             </button>
             <button
-              onClick={() => setTab("PROFESSIONAL")}
+              onClick={() => setTab('PROFESSIONAL')}
               className={`${
-                tab == "PROFESSIONAL" ? "text-orange-500 underline" : ""
+                tab == 'PROFESSIONAL' ? 'text-orange-500 underline' : ''
               }`}
             >
               professional
@@ -105,10 +105,10 @@ const Chat = () => {
               prefix={<GoSearch color="#B6C0C8" size={16} />}
               placeholder="Enter Search..."
               style={{
-                width: "100%",
+                width: '100%',
                 height: 40,
-                border: "1px solid #E7EBED",
-                outline: "none",
+                border: '1px solid #E7EBED',
+                outline: 'none',
                 borderRadius: 8,
               }}
               className="poppins-regular text-[#B6C0C8] text-[14px] leading-5"
@@ -122,8 +122,8 @@ const Chat = () => {
                     key={index}
                     className={`flex cursor-pointer items-center gap-[10px] ${
                       patient?.receiver?.id === partnerId
-                        ? "bg-[#E7EBED]"
-                        : "bg-[#FDFDFD]"
+                        ? 'bg-[#E7EBED]'
+                        : 'bg-[#FDFDFD]'
                     }  rounded-lg p-2`}
                   >
                     <img
@@ -131,8 +131,8 @@ const Chat = () => {
                       style={{
                         width: 56,
                         height: 56,
-                        borderRadius: "100%",
-                        border: "2px solid #92A2AE",
+                        borderRadius: '100%',
+                        border: '2px solid #92A2AE',
                       }}
                       alt=""
                     />
@@ -143,7 +143,7 @@ const Chat = () => {
                           {patient?.receiver?.last_name}
                         </h1>
                         <p className="text-[#8B8B8B] poppins-regular  text-sm leading-5">
-                          {moment(patient?.created_at).format("LT")}
+                          {moment(patient?.created_at).format('LT')}
                         </p>
                       </div>
                       <p className="text-[#8B8B8B] poppins-regular  text-sm leading-5">
@@ -162,7 +162,7 @@ const Chat = () => {
             className=" h-[76vh] p-6 pb-20 overflow-y-scroll bg-[#FEF1E6]"
             style={{
               boxShadow:
-                "rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px",
+                'rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px',
             }}
           >
             {isLoading ? (
@@ -170,12 +170,13 @@ const Chat = () => {
                 <Spin size="large" />
               </div>
             ) : (
+              Array.isArray(allChats) &&
               allChats?.map((item, index) => (
                 <p
                   className={`${
                     partnerId == item?.receiver_id
                       ? `ml-auto bg-[#FFFFFF]`
-                      : "bg-[#E5E5E5]"
+                      : 'bg-[#E5E5E5]'
                   } py-2 my-1 w-fit px-6 rounded-md`}
                   key={index}
                 >
@@ -191,7 +192,7 @@ const Chat = () => {
               value={message}
               className="bg-white"
               style={{
-                borderRadius: "16px",
+                borderRadius: '16px',
               }}
               suffix={
                 <button
@@ -199,9 +200,9 @@ const Chat = () => {
                     send({ receiver_id: partnerId, message })
                       .unwrap()
                       .then(() => {
-                        setMessage("");
-                        socket.emit("private-message", {
-                          receiverId: "23", // partnerId,
+                        setMessage('');
+                        socket.emit('private-message', {
+                          receiverId: '23', // partnerId,
                           message,
                         });
                       });
