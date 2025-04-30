@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import JoditEditor from "jodit-react";
 import { CiEdit } from "react-icons/ci";
 import { FaRegImage, FaRegTrashAlt } from "react-icons/fa";
-import { Button, Form, Input, Modal, Table } from "antd";
+import { Button, Form, Image, Input, Modal, Table } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import Swal from "sweetalert2";
 import {
@@ -97,11 +97,12 @@ const SliderSetting = () => {
             key: "slider_image",
             width: 200,
             render: (img) => (
-                <img
+                <Image
                     style={{
-                        height: 48,
+                        height: 56,
                         width: 147,
                         borderRadius: 8,
+                        objectFit: "cover",
                         backgroundSize: "cover",
                     }}
                     src={generateImage(img)}
@@ -146,7 +147,7 @@ const SliderSetting = () => {
         <div>
             <div style={{ background: "white", padding: "20px", borderRadius: "12px" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "16px" }}>
-                    <h3>Slider Setting</h3>
+                    <h3 className="text-xl font-semibold capitalize">Slider Setting</h3>
                     <Button
                         onClick={() => {
                             setSelectedSlider(null);

@@ -8,10 +8,19 @@ const CreateProductCategoryForm = ({ closeModal, formFor, selectedData, setSelec
     const [form] = Form.useForm()
     const [create, { isLoading: isCreating }] = useCreateShopCategoryMutation()
     const [update, { isLoading: isUpdating }] = useUpdateShopCategoryMutation()
-
+    const [image, setImage] = useState(null);
     const onFinish = (values) => {
+        if(image){
+            values.category_image= image
+        }
+        const formData = new FormData();
+        formData.append('category_name', values.category_name);
+        formData.append('category_image', values.category_image);
         if (formFor === 'add') {
-            create(values).unwrap().then(res => {
+            if (!image) {
+                toast.error('Please select an image')
+            }
+            create(formData).unwrap().then(res => {
                 closeModal()
                 form.resetFields()
                 toast.dismiss()
@@ -21,8 +30,9 @@ const CreateProductCategoryForm = ({ closeModal, formFor, selectedData, setSelec
                 toast.error(err?.data?.message)
             })
         } else {
-            values._method = 'PUT';
-            update({ id: selectedData?.id, data: values }).unwrap().then(res => {
+            // values._method = 'PUT';
+            formData.append('_method',"PUT");
+            update({ id: selectedData?.id, data: formData }).unwrap().then(res => {
                 closeModal()
                 form.resetFields()
                 toast.dismiss()
@@ -57,6 +67,18 @@ const CreateProductCategoryForm = ({ closeModal, formFor, selectedData, setSelec
                 ]}
             >
                 <Input className='py-3' />
+            </Form.Item>
+            <Form.Item label="Image" name="image">
+                <label className='flex items-center gap-2 border w-full py-3 px-2 rounded-md' htmlFor="productImage">
+                    <FaImage />
+                    <span>{image ? image?.name : 'Browse image'}</span>
+                </label>
+                <input
+                    type="file"
+                    id="productImage"
+                    onChange={(e) => setImage(e.target.files[0])}
+                    style={{ display: 'none' }}
+                />
             </Form.Item>
             <div className='text-center py-3 pb-6'>
                 <button disabled={isUpdating || isCreating} className='w-[60%] py-2 bg-[#F27405] text-white rounded-md'>

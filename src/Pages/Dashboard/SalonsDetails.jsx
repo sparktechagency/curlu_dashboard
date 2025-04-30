@@ -10,6 +10,7 @@ import {
   Table,
   Button,
   Checkbox,
+  Image,
 } from 'antd';
 import {
   FaFileExcel,
@@ -115,7 +116,7 @@ const SalonsDetails = () => {
       key: 'username',
       render: (_, record) => (
         <div className="flex justify-start items-center gap-2">
-          <img className="w-10 h-10 rounded-full" src={record?.img} alt="" />
+          <Image className="!w-10 !h-10 !rounded-full !object-cover" src={record?.img} alt="" />
           <p>{record?.name}</p>
         </div>
       ),

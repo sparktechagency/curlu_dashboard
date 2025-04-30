@@ -40,7 +40,7 @@ const SalonInvoice = () => {
                 <div className="flex justify-start items-center gap-2">
                     <img
                         className="w-10 h-10 rounded-full"
-                        src={generateImage(record.salon?.image) || "https://via.placeholder.com/150"}
+                        src={generateImage(record.salon?.image) || "https://placehold.co/400"}
                         alt={record.salon?.name}
                     />
                     <p>{record.salon?.name || 'Unknown'}</p>

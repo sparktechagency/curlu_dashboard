@@ -22,6 +22,7 @@ const Chat = () => {
   const { data: chat, isLoading } = useGetMessageQuery({
     receiver_id: partnerId || data?.chat_list?.[0]?.receiver?.id,
   });
+  console.log(chat)
   const [send] = useSendMessageMutation();
 
   const { socket } = useSocket();

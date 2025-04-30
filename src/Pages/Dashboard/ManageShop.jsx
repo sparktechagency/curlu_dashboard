@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, Table, Button } from 'antd';
+import { Modal, Table, Button, Image } from 'antd';
 import { FaPlus, FaRegFilePdf, FaEdit } from 'react-icons/fa';
 import { MdDelete } from 'react-icons/md';
 import Swal from 'sweetalert2';
@@ -61,7 +61,7 @@ const ManageShop = () => {
             key: "img",
             render: (img) => (
                 <div className="flex justify-start items-center gap-2">
-                    <img className="w-10 h-10 rounded-full" src={img} alt="Product" />
+                    <Image className="!w-10 !h-10 !object-cover !rounded-full" src={img} alt="Product" />
                 </div>
             )
         },

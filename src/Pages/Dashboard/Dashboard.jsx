@@ -74,11 +74,11 @@ const Dashboard = () => {
       path: '/orders-transaction',
       icon: <TbShoppingCartDollar size={24} />,
     },
-    {
-      title: 'Chat',
-      path: '/chat',
-      icon: <IoIosChatbubbles size={24} />,
-    },
+    // {
+    //   title: 'Chat',
+    //   path: '/chat',
+    //   icon: <IoIosChatbubbles size={24} />,
+    // },
     {
       title: 'Salon Invoice',
       path: '/salon-invoice',

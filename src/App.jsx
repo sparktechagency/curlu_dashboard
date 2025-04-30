@@ -34,7 +34,7 @@ import FAQ from "./Pages/Dashboard/FAQ";
 import PrivacyPolicy from "./Pages/Dashboard/PrivacyPolicy";
 import Terms from "./Pages/Dashboard/Terms";
 import AdminProfile from "./Pages/Dashboard/AdminProfile";
-import Chat from "./Pages/Dashboard/Chat";
+// import Chat from "./Pages/Dashboard/Chat";
 import AdminRoutes from "./providers/AdminRoutes";
 
 function App() {
@@ -64,7 +64,7 @@ function App() {
               <Route path="/edit-package" element={<EditPackage />} />
               <Route path="/make-admin" element={<MakeAdmin />} />
               <Route path="/profile" element={<AdminProfile />} />
-              <Route path="/chat" element={<Chat />} />
+              {/* <Route path="/chat" element={<Chat />} /> */}
               <Route path="/setting-change-password" element={<ChangePassword />} />
               <Route path="/settings-profile" element={<Profile />} />
               <Route path="/seller-list" element={<TotalSellerList />} />

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Calendar, Dropdown, Input, Modal, Select, Slider, Table } from 'antd';
+import { Calendar, Dropdown, Image, Input, Modal, Select, Slider, Table } from 'antd';
 import { FaFileExcel, FaRegFilePdf, FaRegTrashCan, FaUserCheck } from 'react-icons/fa6';
 import Swal from 'sweetalert2';
 import { GoArrowUpRight } from 'react-icons/go';
@@ -78,7 +78,7 @@ const TotalSellerList = () => {
       dataIndex: "name",
       key: "username",
       render: (_, record) => (<div className="flex justify-start items-center gap-2">
-        <img className="w-10 h-10 rounded-full" src={record?.img} alt="" />
+        <Image className="!w-10 !h-10 !object-cover !rounded-full" src={record?.img} alt="" />
         <p>{record?.name}</p>
       </div>)
     },
