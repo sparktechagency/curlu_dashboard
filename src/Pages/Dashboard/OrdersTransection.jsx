@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Image, Input, Modal, Select, Table } from 'antd';
+import { Button, Image, Input, Modal, Select, Table, DatePicker } from 'antd';
 import { FaCircle } from 'react-icons/fa6';
 import { TfiReload } from 'react-icons/tfi';
 import { FiSearch } from 'react-icons/fi';
@@ -18,6 +18,9 @@ const OrdersTransection = () => {
 
   const { data, isLoading, error, refetch } = useGetTransitionQuery(filters);
 
+  const onChange = (date, dateString) => {
+    console.log(date, dateString);
+  };
   const handlePageChange = (page) => {
     setFilters((prev) => ({ ...prev, page }));
   };
@@ -94,15 +97,15 @@ const OrdersTransection = () => {
       title: 'ACTION',
       key: 'action',
       render: (_, record) => (
-        <button
-          className="text-blue-500 text-2xl"
+        <Button
+          className="!bg-[#F27405] !text-white"
           onClick={() => {
             setSelectedRecord(record);
             setOpen(true);
           }}
         >
           Details
-        </button>
+        </Button>
       ),
     },
   ];
@@ -125,7 +128,13 @@ const OrdersTransection = () => {
           Salon Services
         </h1>
         <div className="flex justify-end items-center gap-3">
+          <DatePicker
+            className="min-w-44 !h-[40px]"
+            placeholder="Search by date"
+            onChange={onChange}
+          />
           <Input
+          className="min-w-44 !h-[40px]"
             value={filters?.search}
             placeholder="Search..."
             prefix={<FiSearch size={14} color="#868FA0" />}
@@ -145,7 +154,7 @@ const OrdersTransection = () => {
             onChange={(e) => handleSearch(e.target.value)}
           />
           <Select
-            className="min-w-44 h-[40px]"
+            className="min-w-44 !h-[40px]"
             onChange={(value) => handleFilterChange('status', value)}
             placeholder="Status"
             options={[

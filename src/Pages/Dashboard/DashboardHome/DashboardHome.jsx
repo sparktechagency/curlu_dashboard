@@ -36,7 +36,7 @@ function DashboardHome() {
     },
     {
       name: "Total Seller",
-      count: dashboardData?.total_earning,
+      count: dashboardData?.total_earning.toFixed(2),
       color: '#00B047',
       icon: <img src={earning} alt="" />,
       bgColor: "#FFF3D6"
