@@ -8,13 +8,13 @@ import { generateImage } from '../../Redux/baseApi';
 
 const SalonInvoice = () => {
   const [page, setPage] = useState(1);
-  const [search, setSearch] = useState('');
   const [filters, setFilters] = useState({
     search: '',
+    date: '',
   });
-
   const { data, isLoading, refetch } = useGetSalonInvoiceQuery({
     search: filters.search,
+    date: filters.date,
   });
 
   const handleSearch = (value) => {
@@ -25,7 +25,7 @@ const SalonInvoice = () => {
     setPage(page);
   };
   const onChange = (date, dateString) => {
-    console.log(date, dateString);
+    setFilters({ date: dateString });
   };
 
   const columns = [

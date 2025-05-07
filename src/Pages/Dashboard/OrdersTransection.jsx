@@ -12,14 +12,20 @@ const OrdersTransection = () => {
     search: '',
     status: '',
     page: 1,
+    date: '',
   });
   const [open, setOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
 
-  const { data, isLoading, error, refetch } = useGetTransitionQuery(filters);
+  const { data, isLoading, error, refetch } = useGetTransitionQuery({
+    search: filters.search,
+    status: filters.status,
+    page: filters.page,
+    booking_date: filters.date,
+  });
 
   const onChange = (date, dateString) => {
-    console.log(date, dateString);
+    setFilters({ date: dateString });
   };
   const handlePageChange = (page) => {
     setFilters((prev) => ({ ...prev, page }));
@@ -125,7 +131,7 @@ const OrdersTransection = () => {
             color: '#2F2F2F',
           }}
         >
-          Salon Services
+          Order Trans
         </h1>
         <div className="flex justify-end items-center gap-3">
           <DatePicker
@@ -134,7 +140,7 @@ const OrdersTransection = () => {
             onChange={onChange}
           />
           <Input
-          className="min-w-44 !h-[40px]"
+            className="min-w-44 !h-[40px]"
             value={filters?.search}
             placeholder="Search..."
             prefix={<FiSearch size={14} color="#868FA0" />}
