@@ -72,6 +72,15 @@ const OrdersTransection = () => {
       render: (_, record) => record?.service?.name || 'N/A',
     },
     {
+      title: 'Booking Date',
+      key: 'booking_date',
+      render: (_, record) => (
+        <p className="text-[#D93D04]">
+          {new Date(record?.confirmation_date).toLocaleString()}
+        </p>
+      ),
+    },
+    {
       title: 'Order Confirmation Date',
       key: 'confirmation_date',
       render: (_, record) => (
@@ -178,6 +187,7 @@ const OrdersTransection = () => {
       </div>
       <div>
         <Table
+          scroll={{ x: 1500 }}
           columns={columns}
           dataSource={data?.data?.data || []}
           loading={isLoading}

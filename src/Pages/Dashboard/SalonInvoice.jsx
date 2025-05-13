@@ -170,6 +170,7 @@ const SalonInvoice = () => {
       </div>
       <div>
         <Table
+          scroll={{ x: 1500 }}
           columns={columns}
           dataSource={data?.data?.data || []}
           loading={isLoading}

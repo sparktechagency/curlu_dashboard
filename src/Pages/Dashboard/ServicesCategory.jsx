@@ -164,6 +164,7 @@ const ServicesCategory = () => {
       {isError && <div>Error loading categories</div>}
       <div>
         <Table
+          scroll={{ x: 1500 }}
           columns={columns}
           dataSource={categories}
           loading={isLoading}

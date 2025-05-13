@@ -116,7 +116,11 @@ const SalonsDetails = () => {
       key: 'username',
       render: (_, record) => (
         <div className="flex justify-start items-center gap-2">
-          <Image className="!w-10 !h-10 !rounded-full !object-cover" src={record?.img} alt="" />
+          <Image
+            className="!w-10 !h-10 !rounded-full !object-cover"
+            src={record?.img}
+            alt=""
+          />
           <p>{record?.name}</p>
         </div>
       ),
@@ -272,6 +276,7 @@ const SalonsDetails = () => {
       </div>
       <div>
         <Table
+          scroll={{ x: 1500 }}
           loading={isLoading || isFetching}
           columns={columns}
           dataSource={data}

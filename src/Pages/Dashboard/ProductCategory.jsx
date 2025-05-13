@@ -100,7 +100,7 @@ const ProductCategory = () => {
       render: (_, record) => (
         <Image
           src={record?.category_image}
-          style={{ width: '40px', height: '40px',borderRadius:"50%" }}
+          style={{ width: '40px', height: '40px', borderRadius: '50%' }}
           alt=""
         />
       ),
@@ -169,6 +169,7 @@ const ProductCategory = () => {
       </div>
       <div>
         <Table
+          scroll={{ x: 1500 }}
           loading={isFetching || isLoading}
           columns={columns}
           dataSource={data}
