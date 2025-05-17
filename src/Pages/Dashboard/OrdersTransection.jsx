@@ -113,13 +113,24 @@ const OrdersTransection = () => {
       key: 'action',
       render: (_, record) => (
         <Button
-          className="!bg-[#F27405] !text-white"
+          className=" !text-white"
           onClick={() => {
             setSelectedRecord(record);
             setOpen(true);
           }}
         >
-          Details
+          <svg
+            width="13"
+            height="14"
+            viewBox="0 0 13 14"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M10.5208 4.4038L1.91421 13.0104L0.5 11.5962L9.10659 2.98959H1.52082V0.989594H12.5208V11.9896H10.5208V4.4038Z"
+              fill="#4289FF"
+            />
+          </svg>
         </Button>
       ),
     },

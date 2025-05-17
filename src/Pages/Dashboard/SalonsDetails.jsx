@@ -11,6 +11,7 @@ import {
   Button,
   Checkbox,
   Image,
+  Popconfirm,
 } from 'antd';
 import {
   FaFileExcel,
@@ -153,8 +154,15 @@ const SalonsDetails = () => {
             }}
             className="text-blue-500 text-2xl cursor-pointer"
           />
-          <button
-            onClick={() => {
+          <Popconfirm
+            placement="topRight"
+            title={`Are you sure you want to ${
+              record?.rest?.user_status == 'inactive' ? 'unblock' : 'block'
+            } this user?`}
+            description={''}
+            okText="Yes"
+            cancelText="No"
+            onConfirm={() => {
               blockUnblock(record?.rest?.id)
                 .unwrap()
                 .then((res) => {
@@ -165,18 +173,21 @@ const SalonsDetails = () => {
                   toast.error(err?.data?.message);
                 });
             }}
-            className={`${
-              record?.rest?.user_status == 'inactive'
-                ? 'text-green-500'
-                : 'text-red-500'
-            }  text-2xl cursor-pointer`}
           >
-            {record?.rest?.user_status == 'inactive' ? (
-              <FaUserCheck />
-            ) : (
-              <TbUserX />
-            )}
-          </button>
+            <button
+              className={`${
+                record?.rest?.user_status == 'inactive'
+                  ? 'text-red-500'
+                  : 'text-green-500'
+              }  text-2xl cursor-pointer`}
+            >
+              {record?.rest?.user_status == 'inactive' ? (
+                <TbUserX />
+              ) : (
+                <FaUserCheck />
+              )}
+            </button>
+          </Popconfirm>
         </div>
       ),
     },
