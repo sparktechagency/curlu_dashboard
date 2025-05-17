@@ -36,6 +36,7 @@ import Terms from "./Pages/Dashboard/Terms";
 import AdminProfile from "./Pages/Dashboard/AdminProfile";
 // import Chat from "./Pages/Dashboard/Chat";
 import AdminRoutes from "./providers/AdminRoutes";
+import EarningUpdate from "./Pages/Dashboard/EarningUpdate";
 
 function App() {
   return (
@@ -72,6 +73,7 @@ function App() {
               <Route path="/seller-product-list" element={<SellerProductList />} />
               <Route path="/emails" element={<Emails />} />
               <Route path="/top-seller-list" element={<TopSellerList />} />
+              <Route path="/earning-commition-update" element={<EarningUpdate />} />
             </Route>
             <Route path="/login" element={<Login />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />

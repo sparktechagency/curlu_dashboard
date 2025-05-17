@@ -14,6 +14,7 @@ import { MdKeyboardArrowDown } from 'react-icons/md';
 import {
   FaFileInvoiceDollar,
   FaFire,
+  FaMoneyBillTrendUp,
   FaRuler,
   FaStore,
   FaUserPlus,
@@ -93,6 +94,11 @@ const Dashboard = () => {
       title: 'Notifications',
       path: '/notification',
       icon: <IoMdNotificationsOutline size={24} />,
+    },
+    {
+      title: 'Earning Commission',
+      path: '/earning-commition-update',
+      icon: <FaMoneyBillTrendUp size={24} />,
     },
   ];
   const settingOptions = [
