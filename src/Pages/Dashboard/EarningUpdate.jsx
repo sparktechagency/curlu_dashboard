@@ -36,7 +36,6 @@ function EarningUpdate() {
         curlu_earning: values.earning,
       };
       const res = await updateEarning({ data }).unwrap();
-      console.log(res);
       if (res?.status) {
         toast.success(res?.message || 'Earning updated successfully!');
       }
