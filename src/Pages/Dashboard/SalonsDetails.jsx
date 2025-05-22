@@ -29,7 +29,7 @@ import {
   useBlockUnblockMutation,
   useGetSalonQuery,
 } from '../../Redux/Apis/salonApis';
-import { imageUrl } from '../../Redux/baseApi';
+import { generateImage, imageUrl } from '../../Redux/baseApi';
 import { CSVLink } from 'react-csv';
 import { TbUserX } from 'react-icons/tb';
 import toast from 'react-hot-toast';
@@ -236,6 +236,8 @@ const SalonsDetails = () => {
         : 'https://i.ibb.co/CBvrNxh/Rectangle-5252.png',
     };
   });
+  const isPdf = selectedData?.rest?.kbis?.toLowerCase().endsWith('.pdf');
+
   return (
     <div
       style={{
@@ -291,11 +293,12 @@ const SalonsDetails = () => {
           loading={isLoading || isFetching}
           columns={columns}
           dataSource={data}
-          pagination={{
-            pageSize: 10,
-            defaultCurrent: parseInt(page),
-            onChange: handlePageChange,
-          }}
+          pagination={false}
+          // pagination={{
+          //   pageSize: 10,
+          //   defaultCurrent: parseInt(page),
+          //   onChange: handlePageChange,
+          // }}
         />
       </div>
       <Modal
@@ -401,12 +404,35 @@ const SalonsDetails = () => {
             </div>
             <div>
               <p className="text-sm font-semibold mb-1">Kbis</p>
-              <div className="pr-12 w-full h-[150px]">
+              {/* <div className="pr-12 w-full h-[150px]">
+                <h1>
+                  {typeof(selectedData?.rest?.kbis) === 'number'
+                    ? selectedData?.rest?.kbis
+                    : ''}
+                </h1>
                 <img
                   className="w-full h-full object-contain"
                   src={`${imageUrl}${selectedData?.rest?.kbis}`}
                   alt="Kbis"
                 />
+              </div> */}
+              <div className="pr-12 w-full h-[150px]">
+                {isPdf ? (
+                  <iframe
+                    src={generateImage(selectedData.rest.kbis)}
+                    title="Kbis PDF"
+                    className="w-full h-full"
+                  />
+                ) : (
+                  <>
+                    <h1>{selectedData?.rest?.kbis}</h1>
+                    {/* <img
+                      className="w-full h-full object-contain"
+                      src={`${imageUrl}${selectedData?.rest?.kbis}`}
+                      alt="Kbis"
+                    /> */}
+                  </>
+                )}
               </div>
             </div>
           </div>

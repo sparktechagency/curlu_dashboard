@@ -47,6 +47,7 @@ function App() {
             <Route exact path="/" element={<AdminRoutes> <Dashboard /> </AdminRoutes>}>
               <Route path="/" element={<DashboardHome />} />
               <Route path="/notification" element={<Notification />} />
+              <Route path="/dashboard/feedback" element={<Notification />} />
               <Route path="/all-feedback" element={<AllFeedbacks />} />
               <Route path="/salons-setails" element={<SalonsDetails />} />
               <Route path="/salons-services" element={<SalonsServices />} />

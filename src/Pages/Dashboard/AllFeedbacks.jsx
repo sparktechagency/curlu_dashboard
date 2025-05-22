@@ -1,39 +1,50 @@
+import React, { useMemo, useState } from 'react';
 import { DatePicker, Modal, Select, Table } from 'antd';
-import React, { useState } from 'react';
-import { FaArrowLeft, FaStar } from 'react-icons/fa6';
-import { GiBackwardTime } from 'react-icons/gi';
+import { FaArrowLeft, FaBatteryEmpty, FaStar } from 'react-icons/fa6';
 import { GoArrowUpRight } from 'react-icons/go';
-import { IoTimeOutline } from 'react-icons/io5';
 import { TfiReload } from 'react-icons/tfi';
 import { Link, useNavigate } from 'react-router-dom';
-const data = [
-  {
-    key: '1',
-    name: 'Tushar',
-    img: 'https://i.ibb.co/B2xfD8H/images.png',
-    Salon: 'Babaji Salon',
-    FeedbackDate: '8/16/13',
-    Comments:
-      'the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum',
-    Review: 5,
-  },
-  {
-    key: '2',
-    name: 'Tushar',
-    img: 'https://i.ibb.co/B2xfD8H/images.png',
-    Salon: 'Babaji Salon',
-    FeedbackDate: '8/16/13',
-    Comments:
-      'the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum',
-    Review: 5,
-  },
-];
-const AllFeedbacks = () => {
+import {
+  useGetAllFeedbackQuery,
+  useGetSalonListQuery,
+} from '../../Redux/Apis/feedbackApis';
+import { generateImage } from '../../Redux/baseApi';
+const AllFeedbacks = ({ head = true }) => {
   const [page, setPage] = useState(
     new URLSearchParams(window.location.search).get('page') || 1
   );
+  const [filters, setFilters] = useState({
+    page: 1,
+    salon_id: '',
+    date: '',
+  });
+  const {
+    data: feedbackData,
+    isLoading: feedbackLoading,
+    refetch,
+  } = useGetAllFeedbackQuery({
+    date: filters.date,
+    salon_id: filters.salon_id,
+    page: page,
+  });
+  const { data: salonOptions, isLoading: salonOptionsLoading } =
+    useGetSalonListQuery();
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const [selectedFeedback, setSelectedFeedback] = useState(null);
+  const feedbackTableSourceData =
+    feedbackData?.data?.data.map((item, index) => ({
+      key: index + 1,
+      name: item?.user?.name,
+      img: generateImage(item?.user?.image),
+      Salon:
+        item?.salon?.user?.name + ' ' + item?.salon?.user?.last_name || 'N/A',
+      FeedbackDate: new Date(item?.created_at).toLocaleDateString(),
+      Comments: item?.comment,
+      Review: item?.rating,
+      fullItem: item,
+    })) || [];
+
   const columns = [
     {
       title: 'S.No',
@@ -46,7 +57,11 @@ const AllFeedbacks = () => {
       key: 'username',
       render: (_, record) => (
         <div className="flex justify-start items-center gap-2">
-          <img className="w-10 h-10 rounded-full" src={record?.img} alt="" />
+          <img
+            className="w-10 h-10 rounded-full object-cover"
+            src={record?.img}
+            alt=""
+          />
           <p>{record?.name?.slice(0, 7)}</p>
         </div>
       ),
@@ -80,28 +95,39 @@ const AllFeedbacks = () => {
         </div>
       ),
     },
-
     {
       title: 'ACTION',
       dataIndex: 'printView',
       key: 'printView',
       render: (_, record) => (
         <GoArrowUpRight
-          onClick={() => setOpen(true)}
+          onClick={() => {
+            setSelectedFeedback(record?.fullItem);
+            setOpen(true);
+          }}
           className="text-blue-500 text-lg cursor-pointer"
         />
       ),
     },
   ];
+
   const handlePageChange = (page) => {
     setPage(page);
     const params = new URLSearchParams(window.location.search);
     params.set('page', page);
     window.history.pushState(null, '', `?${params.toString()}`);
   };
-  const handleChange = (value) => {};
-  const onChange = (date, dateString) => {};
-  const handleLocationChange = (value) => {};
+  const handleChange = (value) => {
+    setFilters({ salon_id: value });
+  };
+  const onChange = (date, dateString) => {
+    setFilters({ date: dateString });
+  };
+
+  const salonOption = salonOptions?.data?.map((item) => ({
+    label: item.name,
+    value: item.id,
+  }));
   return (
     <div
       style={{
@@ -120,43 +146,77 @@ const AllFeedbacks = () => {
           justifyContent: 'space-between',
         }}
       >
-        <div className="flex justify-start items-center gap-2">
-          <button
-            onClick={() => {
-              navigate(-1);
-            }}
-            className="bg-gray-100 p-1 text-xl rounded-md"
-          >
-            <FaArrowLeft />
-          </button>
-          <h1 style={{ fontSize: '20px', fontWeight: 600, color: '#2F2F2F' }}>
-            All Feedbacks
-          </h1>
-        </div>
-        <div className="flex justify-end items-center">
-          <DatePicker className="mr-2 h-9" onChange={onChange} />
-          <Select
-            className="mr-2 h-9"
-            defaultValue="salon"
-            style={{ width: 120 }}
-            onChange={handleChange}
-            options={[
-              { value: 'jack', label: 'Jack' },
-              { value: 'lucy', label: 'Lucy' },
-              { value: 'Yiminghe', label: 'yiminghe' },
-            ]}
-          />
-          <button className="p-2 text-lg text-white bg-[#F27405] rounded-md">
-            <TfiReload />
-          </button>
-        </div>
+        {head ? (
+          <>
+            <div className="flex justify-start items-center gap-2">
+              <button
+                onClick={() => {
+                  navigate(-1);
+                }}
+                className="bg-gray-100 p-1 text-xl rounded-md"
+              >
+                <FaArrowLeft />
+              </button>
+              <h1
+                style={{ fontSize: '20px', fontWeight: 600, color: '#2F2F2F' }}
+              >
+                All Feedbacks
+              </h1>
+            </div>
+            <div className="flex justify-end items-center">
+              <DatePicker className="mr-2 h-9" onChange={onChange} />
+              <Select
+                className="mr-2 h-9"
+                placeholder="please select salon"
+                style={{ width: 150 }}
+                onChange={handleChange}
+                options={salonOption}
+                loading={salonOptionsLoading}
+              />
+              <button
+                onClick={() => {
+                  setFilters({
+                    page: 1,
+                    salon_id: '',
+                    date: '',
+                  });
+                  refetch();
+                }}
+                className="p-2 text-lg text-white bg-[#F27405] rounded-md"
+              >
+                <TfiReload />
+              </button>
+            </div>
+          </>
+        ) : (
+          <div className="w-full flex items-center justify-between rounded-md bg-white">
+            <h1 style={{ fontSize: '20px', fontWeight: 600, color: '#2F2F2F' }}>
+              Recent Feedbacks
+            </h1>
+            <Link to={'/all-feedback'}>
+              <button className="cursor-pointer text-[#4289FF] underline">
+                View all
+              </button>
+            </Link>
+          </div>
+        )}
       </div>
       <Table
         scroll={{ x: 1500 }}
         columns={columns}
-        dataSource={data}
+        loading={feedbackLoading}
+        dataSource={feedbackTableSourceData}
+        locale={{
+          emptyText: (
+            <div className="h-48 flex items-center justify-center">
+              <h1 className="text-red-400">
+                'No Feedback available for this salon'
+              </h1>
+            </div>
+          ),
+        }}
         pagination={{
-          pageSize: 4,
+          pageSize: 10,
           defaultCurrent: parseInt(page),
           onChange: handlePageChange,
         }}
@@ -168,82 +228,72 @@ const AllFeedbacks = () => {
         footer={false}
         width={800}
       >
-        <div className="p-6">
-          <p className="text-[#F27405] text-lg">Feedback Deatails</p>
-          <div className="grid grid-cols-2 mt-6 border-b pb-4">
-            <div className="w-full">
-              <p className="font-semibold">User</p>
-              <div className="flex justify-start items-start gap-2 mt-4">
-                <img
-                  className="w-20 h-20 rounded-full"
-                  src="https://i.ibb.co/B2xfD8H/images.png"
-                  alt=""
-                />
-                <div>
-                  <p className="text-base text-[#F27405] font-semibold">
-                    Mr. Mahmud
-                  </p>
-                  <p className="my-1">mahmud@gmail.com</p>
-                  <p className="my-1">
-                    76/4 R no. 60/1 Rue des Saints-Paris, 75005 Paris
-                  </p>
-                  <p>+099999</p>
+        {selectedFeedback ? (
+          <div className="p-6">
+            <p className="text-[#F27405] text-lg">Feedback Details</p>
+            <div className="grid grid-cols-2 mt-6 border-b pb-4">
+              <div className="w-full">
+                <p className="font-semibold">User</p>
+                <div className="flex justify-start items-start gap-2 mt-4">
+                  <img
+                    className="w-20 h-20 rounded-full object-cover"
+                    src={generateImage(selectedFeedback?.user?.image)}
+                    alt={selectedFeedback?.user?.name || 'User'}
+                  />
+                  <div>
+                    <p className="text-base text-[#F27405] font-semibold">
+                      {selectedFeedback?.user?.name}{' '}
+                      {selectedFeedback?.user?.last_name}
+                    </p>
+                    <p className="my-1">{selectedFeedback?.user?.email}</p>
+                    <p className="my-1">{selectedFeedback?.user?.address}</p>
+                    <p>{selectedFeedback?.user?.phone}</p>
+                  </div>
+                </div>
+              </div>
+              <div className="w-full">
+                <p className="font-semibold">Salon</p>
+                <div className="flex justify-start items-start gap-2 mt-4">
+                  <img
+                    className="w-20 h-20 rounded-full object-cover"
+                    src={generateImage(selectedFeedback?.salon?.user?.image)}
+                    alt={selectedFeedback?.salon?.user?.name || 'Salon'}
+                  />
+                  <div>
+                    <p className="text-base text-[#734D2C] font-semibold">
+                      {selectedFeedback?.salon?.user?.name}{' '}
+                      {selectedFeedback?.salon?.user?.last_name}
+                    </p>
+                    <p className="my-1">
+                      {selectedFeedback?.salon?.user?.email}
+                    </p>
+                    <p className="my-1">
+                      {selectedFeedback?.salon?.user?.address}
+                    </p>
+                    <p>{selectedFeedback?.salon?.user?.phone}</p>
+                  </div>
                 </div>
               </div>
             </div>
-            <div className="w-full">
-              <p className="font-semibold">Salon</p>
-              <div className="flex justify-start items-start gap-2 mt-4">
-                <img
-                  className="w-20 h-20 rounded-full"
-                  src="https://i.ibb.co/B2xfD8H/images.png"
-                  alt=""
-                />
-                <div>
-                  <p className="text-base text-[#734D2C] font-semibold">
-                    Babaji Salon
-                  </p>
-                  <p className="my-1">mahmud@gmail.com</p>
-                  <p className="my-1">
-                    76/4 R no. 60/1 Rue des Saints-Paris, 75005 Paris
-                  </p>
-                  <p>+099999</p>
+            <div className="mt-4">
+              <div className="flex justify-start items-center gap-3">
+                <p className="font-medium text-base whitespace-nowrap">
+                  Rating :
+                </p>
+                <div className="flex justify-start items-center gap-2">
+                  <FaStar className="text-yellow-500" />
+                  <p>{selectedFeedback?.rating}/5</p>
                 </div>
               </div>
-            </div>
-          </div>
-          <div className="mt-4 border-b border-b-[#F27405] pb-4">
-            <p className="font-semibold">Order details</p>
-            <div className="grid grid-cols-3 mt-2">
-              <p>#11111111</p>
-              <p className="flex justify-start items-center gap-1">
-                <GiBackwardTime className="text-lg" />
-                10 may, 2024
-              </p>
-              <p className="flex justify-start items-center gap-1 text-[#F27405]">
-                <IoTimeOutline className="text-lg" />
-                10 may, 2024-10:00 Am
+              <p>
+                <span className="font-medium text-base">Comment : </span>
+                {selectedFeedback?.comment}
               </p>
             </div>
           </div>
-          <div className="mt-4">
-            <div className="flex justify-start items-center gap-3">
-              <p className="font-medium text-base whitespace-nowrap">
-                Rating :
-              </p>
-              <div className="flex justify-start items-center gap-2">
-                <FaStar className="text-yellow-500" />
-                <p>4.5/5</p>
-              </div>
-            </div>
-            <p>
-              <span className="font-medium text-base">Comment : </span>dui. at
-              tortor. nisi vitae Nullam adipiscing malesuada faucibus sit lacus
-              orci Nam ac convallis. amet, elit. Donec elit massa nisl.
-              hendrerit lorem. nec nisi
-            </p>
-          </div>
-        </div>
+        ) : (
+          <p>Loading...</p>
+        )}
       </Modal>
     </div>
   );

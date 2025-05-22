@@ -10,7 +10,7 @@ export const baseApi = createApi({
     },
   }),
   endpoints: () => ({}),
-  tagTypes: ['auth', 'category', 'msg', 'earning'],
+  tagTypes: ['auth', 'category', 'msg', 'earning', 'feedback'],
 });
 export const imageUrl = 'http://182.252.68.227:8007/';
 export const generateImage = (image) => {
