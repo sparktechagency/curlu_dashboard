@@ -10,9 +10,6 @@ import {
 } from '../../Redux/Apis/feedbackApis';
 import { generateImage } from '../../Redux/baseApi';
 const AllFeedbacks = ({ head = true }) => {
-  const [page, setPage] = useState(
-    new URLSearchParams(window.location.search).get('page') || 1
-  );
   const [filters, setFilters] = useState({
     page: 1,
     salon_id: '',
@@ -25,8 +22,9 @@ const AllFeedbacks = ({ head = true }) => {
   } = useGetAllFeedbackQuery({
     date: filters.date,
     salon_id: filters.salon_id,
-    page: page,
+    page: filters?.page,
   });
+
   const { data: salonOptions, isLoading: salonOptionsLoading } =
     useGetSalonListQuery();
   const [open, setOpen] = useState(false);
@@ -111,12 +109,6 @@ const AllFeedbacks = ({ head = true }) => {
     },
   ];
 
-  const handlePageChange = (page) => {
-    setPage(page);
-    const params = new URLSearchParams(window.location.search);
-    params.set('page', page);
-    window.history.pushState(null, '', `?${params.toString()}`);
-  };
   const handleChange = (value) => {
     setFilters({ salon_id: value });
   };
@@ -216,9 +208,9 @@ const AllFeedbacks = ({ head = true }) => {
           ),
         }}
         pagination={{
-          pageSize: 10,
-          defaultCurrent: parseInt(page),
-          onChange: handlePageChange,
+          pageSize: feedbackData?.data?.per_page || 10,
+          defaultCurrent: parseInt(filters?.page),
+          // onChange: handlePageChange,
         }}
       />
       <Modal

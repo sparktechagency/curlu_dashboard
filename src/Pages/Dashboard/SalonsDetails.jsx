@@ -43,10 +43,14 @@ const SalonsDetails = () => {
         year: 'numeric',
       })
   );
+  const [filters, setFilters] = useState({
+    search: '',
+    status: '',
+    page: 1,
+    date: '',
+  });
+
   const [searchBy, setSearchBy] = useState('');
-  const [page, setPage] = useState(
-    new URLSearchParams(window.location.search).get('page') || 1
-  );
   const [open, setOpen] = useState(false);
   const [openAddSalon, setOpenAddSalon] = useState(false);
   const [selectedData, setSelectedData] = useState({});
@@ -56,7 +60,7 @@ const SalonsDetails = () => {
     refetch,
     isLoading,
     isFetching,
-  } = useGetSalonQuery({ page, location });
+  } = useGetSalonQuery({ page: filters.page, location });
   const [blockUnblock] = useBlockUnblockMutation();
   const data = salons?.data?.map((salon, index) => {
     const {
@@ -194,10 +198,7 @@ const SalonsDetails = () => {
   ];
 
   const handlePageChange = (page) => {
-    setPage(page);
-    const params = new URLSearchParams(window.location.search);
-    params.set('page', page);
-    window.history.pushState(null, '', `?${params.toString()}`);
+    setFilters((prev) => ({ ...prev, page }));
   };
   const handleChange = (value) => {};
   const csvData = salons?.data?.map((salon, index) => {
@@ -293,12 +294,12 @@ const SalonsDetails = () => {
           loading={isLoading || isFetching}
           columns={columns}
           dataSource={data}
-          pagination={false}
-          // pagination={{
-          //   pageSize: 10,
-          //   defaultCurrent: parseInt(page),
-          //   onChange: handlePageChange,
-          // }}
+          pagination={{
+            pageSize: 10,
+            current: filters.page,
+            total: data?.length || 0,
+            onChange: handlePageChange,
+          }}
         />
       </div>
       <Modal
@@ -394,12 +395,34 @@ const SalonsDetails = () => {
             </div>
             <div>
               <p className="text-sm font-semibold mb-1">Id Card</p>
-              <div className="pr-12 w-full h-[150px]">
+              {/* <div className="pr-12 w-full h-[150px]">
                 <img
                   className="w-full h-full object-contain"
-                  src={`${imageUrl}${selectedData?.rest?.id_card}`}
+                  src={generateImage(selectedData?.rest?.id_card)}
                   alt="Id Card"
                 />
+                <a
+                  href={generateImage(selectedData?.rest?.id_card)}
+                  download={true}
+                >
+                  <Button type="primary">Download ID Card</Button>
+                </a>
+              </div> */}
+              <div className="flex flex-col items-center justify-center">
+                <img
+                  src={generateImage(selectedData?.rest?.id_card)}
+                  alt="ID Card"
+                  style={{ maxWidth: '100%', height: '150px' }}
+                />
+
+                <a
+                  href={generateImage(selectedData?.rest?.id_card)}
+                  download
+                  target="_blank"
+                  className="underline text-blue-500"
+                >
+                  Download ID card
+                </a>
               </div>
             </div>
             <div>
@@ -416,22 +439,30 @@ const SalonsDetails = () => {
                   alt="Kbis"
                 />
               </div> */}
-              <div className="pr-12 w-full h-[150px]">
+              <div className="pr-12 w-full h-[150px] max-h-[150px]">
                 {isPdf ? (
-                  <iframe
-                    src={generateImage(selectedData.rest.kbis)}
-                    title="Kbis PDF"
-                    className="w-full h-full"
-                  />
-                ) : (
                   <>
-                    <h1>{selectedData?.rest?.kbis}</h1>
-                    {/* <img
-                      className="w-full h-full object-contain"
-                      src={`${imageUrl}${selectedData?.rest?.kbis}`}
-                      alt="Kbis"
-                    /> */}
+                    <iframe
+                      src={generateImage(selectedData?.rest?.kbis)}
+                      title="Kbis PDF"
+                      className="w-full h-full"
+                      style={{ border: 'none' }}
+                    />
+                    <a
+                      href={generateImage(selectedData?.rest?.kbis)}
+                      download
+                      target="_blank"
+                      className="underline text-blue-500"
+                    >
+                      Download KBIS
+                    </a>
                   </>
+                ) : (
+                  // your non-PDF display here
+                  <div>
+                    <h1>{selectedData?.rest?.kbis}</h1>
+                    {/* optionally an image */}
+                  </div>
                 )}
               </div>
             </div>

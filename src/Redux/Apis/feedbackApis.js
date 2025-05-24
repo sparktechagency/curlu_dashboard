@@ -3,7 +3,7 @@ import { baseApi } from '../baseApi';
 const feedbackApis = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getAllFeedback: builder.query({
-      query: ({ page, date, salon_id }) => ({
+      query: ({ page, date, salon_id, per_page }) => ({
         url: '/feedback',
         method: 'GET',
         headers: {
@@ -12,7 +12,7 @@ const feedbackApis = baseApi.injectEndpoints({
             JSON.parse(localStorage.getItem('token')) || ''
           }`,
         },
-        params: { page, date, salon_id },
+        params: { page, date, salon_id, per_page },
       }),
       providesTags: ['feedback'],
     }),
