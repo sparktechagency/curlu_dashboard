@@ -1,27 +1,61 @@
 import React, { useState } from 'react'
 import { Calendar, Dropdown, Form, Input, Button, Checkbox, Space, } from 'antd';
 import { FaEye, FaEyeSlash, FaImage } from 'react-icons/fa6';
-const CreateSalonForm = () => {
+import toast from 'react-hot-toast';
+import { MakeFormData } from '../../Util/MakeFormData';
+import { useCreateSalonMutation } from '../../Redux/Apis/salonApis';
+const CreateSalonForm = ({ closeModal }) => {
+    const [form] = Form.useForm()
     const [passwordInputType, setPasswordInputType] = useState('password');
     const [CpasswordInputType, setCPasswordInputType] = useState('password');
-    const onFinish = (values) => {
-        console.log('Success:', values);
-    };
+    const [create, { isLoading }] = useCreateSalonMutation()
     const [image, setImage] = useState({
         idCard: false,
         Kbis: false,
         profile: false
     })
+    const onFinish = (values) => {
+        if (!image?.idCard || !image?.Kbis || !image?.profile) {
+            return toast.error(`${!image?.idCard ? 'Id Card' : !image?.Kbis ? "Kbis" : "Salon Profile"} Image is required`)
+        }
+        values.kbis = image?.Kbis
+        values.id_card = image?.idCard
+        values.image = image?.profile
+        values.role_type = 'PROFESSIONAL'
+        const formData = MakeFormData(values)
+        create(formData).unwrap()
+            .then(res => {
+                form.resetFields()
+                toast.success(res.message)
+            }).catch(err => {
+                toast.error(err?.data?.message)
+            }).finally(() => {
+                closeModal()
+            })
+    };
     return (
         <Form
             layout='vertical'
             onFinish={onFinish}
             autoComplete="off"
+            form={form}
         >
             <div className='grid grid-cols-2 gap-2'>
                 <Form.Item
-                    label="Salon name"
-                    name="salonName"
+                    label="First name"
+                    name="name"
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Please input your Salon name!',
+                        },
+                    ]}
+                >
+                    <Input />
+                </Form.Item>
+                <Form.Item
+                    label="Last Name"
+                    name="last_name"
                     rules={[
                         {
                             required: true,
@@ -44,18 +78,6 @@ const CreateSalonForm = () => {
                     <Input />
                 </Form.Item>
                 <Form.Item
-                    label="Salon location"
-                    name="salonLocation"
-                    rules={[
-                        {
-                            required: true,
-                            message: 'Please input your Salon location!',
-                        },
-                    ]}
-                >
-                    <Input />
-                </Form.Item>
-                <Form.Item
                     label="Phone No."
                     name="phone"
                     rules={[
@@ -69,7 +91,7 @@ const CreateSalonForm = () => {
                 </Form.Item>
                 <Form.Item
                     label="Bank account no."
-                    name="bankAccount"
+                    name="iban_number"
                     rules={[
                         {
                             required: true,
@@ -83,7 +105,7 @@ const CreateSalonForm = () => {
                     className='relative'
                     label="Id card"
                     type='file'
-                    name="idCard"
+                // name="id_card"
                 >
                     <label className='flex justify-start items-center gap-2 border w-full py-1 px-2 rounded-md' htmlFor="idCard">
                         {
@@ -100,7 +122,7 @@ const CreateSalonForm = () => {
                     className='relative'
                     label="Kbis"
                     type='file'
-                    name="Kbis"
+                // name="kbis"
                 >
                     <label className='flex justify-start items-center gap-2 border w-full py-1 px-2 rounded-md' htmlFor="Kbis">
                         {
@@ -117,7 +139,7 @@ const CreateSalonForm = () => {
                     className='relative'
                     label="Profile picture"
                     type='file'
-                    name="profile"
+                // name="profile"
                 >
                     <label className='flex justify-start items-center gap-2 border w-full py-1 px-2 rounded-md' htmlFor="profile">
                         {
@@ -150,7 +172,7 @@ const CreateSalonForm = () => {
                 </Form.Item>
                 <Form.Item
                     label="Confirm Password"
-                    name="Cpassword"
+                    name="password_confirmation"
                     rules={[
                         {
                             required: true,
@@ -159,12 +181,25 @@ const CreateSalonForm = () => {
                     ]}
                 >
                     <div className='relative'>
-                        <Input type={passwordInputType} className='w-full' />
+                        <Input type={CpasswordInputType} className='w-full' />
                         {
                             CpasswordInputType == 'password' ? <button onClick={() => setCPasswordInputType('text')} type='button' className='absolute right-2 top-[50%] translate-y-[-50%]'><FaEyeSlash /></button> : <button onClick={() => setCPasswordInputType('password')} type='button' className='absolute right-2 top-[50%] translate-y-[-50%]'> <FaEye /></button>
                         }
 
                     </div>
+                </Form.Item>
+                <Form.Item
+                    className='col-span-2'
+                    label="Salon location"
+                    name="address"
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Please input your Salon location!',
+                        },
+                    ]}
+                >
+                    <Input />
                 </Form.Item>
             </div>
 

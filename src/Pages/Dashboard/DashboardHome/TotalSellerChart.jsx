@@ -5,82 +5,86 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsive
 
 
 
-const TotalSellerChart = () => {
+const TotalSellerChart = ({ chartData }) => {
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May','Jun','Jul','Aug','Sept','Oct','Nov','Dec']
+  const data = chartData?.map((item,i)=>({
+    name:months[i],
+    amt:item?.user
+  })) || []
 
-  const data = [
-    {
-      name: 'Jan',
-      uv: 4000,
-      pv: 2400,
-      amt: 2400,
-    },
-    {
-      name: 'Feb',
-      uv: 3000,
-      pv: 1398,
-      amt: 2210,
-    },
-    {
-      name: 'Mar',
-      uv: 2000,
-      pv: 9800,
-      amt: 2290,
-    },
-    {
-      name: 'Apr',
-      uv: 2780,
-      pv: 3908,
-      amt: 2000,
-    },
-    {
-      name: 'May',
-      uv: 1890,
-      pv: 4800,
-      amt: 2181,
-    },
-    {
-      name: 'Jun',
-      uv: 2390,
-      pv: 3800,
-      amt: 2500,
-    },
-    {
-      name: 'Jun',
-      uv: 3490,
-      pv: 4300,
-      amt: 2100,
-    },
-    {
-      name: 'Jul',
-      uv: 3490,
-      pv: 4300,
-      amt: 2100,
-    },
-    {
-      name: 'Sept',
-      uv: 3490,
-      pv: 4300,
-      amt: 2100,
-    },
-    {
-      name: 'Oct',
-      uv: 3490,
-      pv: 4300,
-      amt: 2100,
-    },
-    {
-      name: 'Nov',
-      uv: 3490,
-      pv: 4300,
-      amt: 2100,
-    },
-    {
-      name: 'Des',
-      uv: 3490,
-      pv: 4300,
-      amt: 2100,
-    },
-  ];
+  //   {
+  //     name: 'Jan',
+  //     uv: 4000,
+  //     pv: 2400,
+  //     amt: 2400,
+  //   },
+  //   {
+  //     name: 'Feb',
+  //     uv: 3000,
+  //     pv: 1398,
+  //     amt: 2210,
+  //   },
+  //   {
+  //     name: 'Mar',
+  //     uv: 2000,
+  //     pv: 9800,
+  //     amt: 2290,
+  //   },
+  //   {
+  //     name: 'Apr',
+  //     uv: 2780,
+  //     pv: 3908,
+  //     amt: 2000,
+  //   },
+  //   {
+  //     name: 'May',
+  //     uv: 1890,
+  //     pv: 4800,
+  //     amt: 2181,
+  //   },
+  //   {
+  //     name: 'Jun',
+  //     uv: 2390,
+  //     pv: 3800,
+  //     amt: 2500,
+  //   },
+  //   {
+  //     name: 'Jun',
+  //     uv: 3490,
+  //     pv: 4300,
+  //     amt: 2100,
+  //   },
+  //   {
+  //     name: 'Jul',
+  //     uv: 3490,
+  //     pv: 4300,
+  //     amt: 2100,
+  //   },
+  //   {
+  //     name: 'Sept',
+  //     uv: 3490,
+  //     pv: 4300,
+  //     amt: 2100,
+  //   },
+  //   {
+  //     name: 'Oct',
+  //     uv: 3490,
+  //     pv: 4300,
+  //     amt: 2100,
+  //   },
+  //   {
+  //     name: 'Nov',
+  //     uv: 3490,
+  //     pv: 4300,
+  //     amt: 2100,
+  //   },
+  //   {
+  //     name: 'Des',
+  //     uv: 3490,
+  //     pv: 4300,
+  //     amt: 2100,
+  //   },
+  // ];
   const [year, setYear] = useState(2024)
 
   const items = [
@@ -109,7 +113,7 @@ const TotalSellerChart = () => {
     <div className='w-full h-full'>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <p style={{ marginTop: "10px", fontSize: "20px", fontWeight: 600, marginBottom: "10px", color: "black", }}>Total users statistics</p>
-        <Dropdown menu={{ items, onClick }} >
+        {/* <Dropdown menu={{ items, onClick }} >
           <p style={{
             // width: "79px", 
             cursor: "pointer",
@@ -122,7 +126,7 @@ const TotalSellerChart = () => {
             {year}
             <DownOutlined style={{ paddingLeft: "18px" }} color='#717171' />
           </p>
-        </Dropdown>
+        </Dropdown> */}
       </div>
 
       <div className='w-full h-[300px]'>

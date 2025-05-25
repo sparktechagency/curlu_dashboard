@@ -7,7 +7,6 @@ import Swal from 'sweetalert2';
 const EditPackage = () => {
     const navigate = useNavigate();
     const data = JSON.parse(localStorage.getItem("package"))
-    console.log(data);
 
 
     const initialFormValues = {

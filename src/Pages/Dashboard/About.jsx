@@ -1,12 +1,15 @@
 import React, { useState, useRef, useMemo, useEffect } from "react";
 import JoditEditor from "jodit-react";
 import Swal from "sweetalert2";
+import { useAddAboutUsMutation, useGetAboutUsQuery } from "../../Redux/Apis/aboutApis";
+import toast from "react-hot-toast";
+import { MakeFormData } from "../../Util/MakeFormData";
 
 const About = () => {
   const editor = useRef(null);
-  const [content, setContent] = useState("");
-  const [isLoading, seLoading] = useState(false);
-
+  const [postAboutUS] = useAddAboutUsMutation()
+  const { data } = useGetAboutUsQuery()
+  const [content, setContent] = useState(data?.description);
   const config = {
     readonly: false,
     placeholder: "Start typings...",
@@ -14,6 +17,22 @@ const About = () => {
       height: 400,
     },
   };
+  const handleAboutUs = () => {
+    const data = {
+      description: content,
+      title: 'About Us',
+      _method: 'PUT'
+    }
+    const formData = MakeFormData(data)
+    postAboutUS(formData).unwrap().then(res => {
+      toast.success(res?.message)
+    }).catch(err => {
+      toast.error(err.data?.message)
+    })
+  }
+  useEffect(() => {
+    setContent(data?.description)
+  }, [data?.description])
   return (
     <>
       <div
@@ -43,7 +62,7 @@ const About = () => {
           config={config}
           tabIndex={1}
           onBlur={(newContent) => setContent(newContent)}
-          onChange={(newContent) => {}}
+          onChange={(newContent) => { }}
         />
       </div>
       <div
@@ -54,7 +73,7 @@ const About = () => {
           alignItems: "center",
         }}
       >
-        <button
+        <button onClick={handleAboutUs}
           style={{
             height: 44,
             width: 150,

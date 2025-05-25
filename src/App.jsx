@@ -34,7 +34,9 @@ import FAQ from "./Pages/Dashboard/FAQ";
 import PrivacyPolicy from "./Pages/Dashboard/PrivacyPolicy";
 import Terms from "./Pages/Dashboard/Terms";
 import AdminProfile from "./Pages/Dashboard/AdminProfile";
-import Chat from "./Pages/Dashboard/Chat";
+// import Chat from "./Pages/Dashboard/Chat";
+import AdminRoutes from "./providers/AdminRoutes";
+import EarningUpdate from "./Pages/Dashboard/EarningUpdate";
 
 function App() {
   return (
@@ -42,9 +44,10 @@ function App() {
       <div className="maincontainer">
         <Router>
           <Routes>
-            <Route exact path="/" element={ <PrivateRoute> <Dashboard /> </PrivateRoute> }>
+            <Route exact path="/" element={<AdminRoutes> <Dashboard /> </AdminRoutes>}>
               <Route path="/" element={<DashboardHome />} />
               <Route path="/notification" element={<Notification />} />
+              <Route path="/dashboard/feedback" element={<Notification />} />
               <Route path="/all-feedback" element={<AllFeedbacks />} />
               <Route path="/salons-setails" element={<SalonsDetails />} />
               <Route path="/salons-services" element={<SalonsServices />} />
@@ -63,14 +66,15 @@ function App() {
               <Route path="/edit-package" element={<EditPackage />} />
               <Route path="/make-admin" element={<MakeAdmin />} />
               <Route path="/profile" element={<AdminProfile />} />
-              <Route path="/chat" element={<Chat />} />
+              {/* <Route path="/chat" element={<Chat />} /> */}
               <Route path="/setting-change-password" element={<ChangePassword />} />
               <Route path="/settings-profile" element={<Profile />} />
-              <Route path="/seller-list" element={<TotalSellerList  />} />
+              <Route path="/seller-list" element={<TotalSellerList />} />
               <Route path="/seller-details/:id" element={<SellerDetails />} />
               <Route path="/seller-product-list" element={<SellerProductList />} />
               <Route path="/emails" element={<Emails />} />
               <Route path="/top-seller-list" element={<TopSellerList />} />
+              <Route path="/earning-commition-update" element={<EarningUpdate />} />
             </Route>
             <Route path="/login" element={<Login />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />

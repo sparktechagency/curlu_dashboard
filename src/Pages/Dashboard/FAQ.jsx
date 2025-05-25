@@ -1,12 +1,14 @@
-import { Form, Input, Modal, Table, Button, Row, Col } from "antd";
+import { Form, Input, Modal, Table, Button, Row, Col, Pagination } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { CiEdit } from "react-icons/ci";
 import { FaPlus } from "react-icons/fa6";
 import { GoQuestion } from "react-icons/go";
 import { RxCross2 } from "react-icons/rx";
 
 import Swal from "sweetalert2";
+import { useAddFaqMutation, useDeleteFaqsMutation, useGetFaqsQuery } from "../../Redux/Apis/aboutApis";
 
 const data = [
   {
@@ -41,6 +43,7 @@ const data = [
   },
 ];
 const FAQ = () => {
+  const [page, setPage] = useState(1)
   const [openAddModel, setOpenAddModel] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
@@ -48,20 +51,46 @@ const FAQ = () => {
   const [editID, seteditID] = useState("");
   const [question, setQuestion] = useState("");
   const [ans, setans] = useState("");
+  const [addFaq] = useAddFaqMutation()
+  const [deleteFaq] = useDeleteFaqsMutation()
+  const { data: faqs } = useGetFaqsQuery({ page })
 
+  // add faq 
   const handelsubmit = (e) => {
     e.preventDefault();
     const question = e.target.question.value;
-    const ans = e.target.ans.value;
-    if (!question || !ans) {
-      return false;
+    const answer = e.target.ans.value;
+    if (!question || !answer) {
+      return toast.error('question and answer is requerd');
     }
+    const data = {
+      answer,
+      question
+    }
+    addFaq(data).unwrap().then(res => {
+      toast.success(res?.message)
+      e.target.reset()
+      setOpenAddModel(false)
+    }).catch(err => {
+      toast.error(err.data?.message)
+    })
     // add faq
   };
   //update faq
   const handleUpdate = (e) => {
     e.preventDefault();
+    const ans = e.target.ans.value
+    // const question = e.target.ans.question
   };
+  // delete faqs 
+  const handleDelete = () => {
+    deleteFaq(deleteId).unwrap().then(res => {
+      setShowDelete(false)
+      toast.success(res?.message)
+    }).catch(err => {
+      toast.error(err.data?.message)
+    })
+  }
   return (
     <div>
       <div style={{ margin: "24px 0" }}>
@@ -103,7 +132,7 @@ const FAQ = () => {
         </div>
       </div>
       <div className="bg-white py-6 px-4 rounded-md">
-        {data.map((item) => (
+        {faqs?.data.map((item) => (
           <div
             key={item?._id}
             className="flex justify-between items-start gap-4 "
@@ -117,15 +146,12 @@ const FAQ = () => {
               </p>
               <div className="flex justify-start items-start gap-2 border-b  py-2 px-4  rounded-xl my-4">
                 <p className="text-[#919191] leading-[24px] mb-6 ">
-                  NIFI is a comprehensive nail salon platform app designed to
-                  connect clients with top-rated nail salons and professionals,
-                  offering features like appointment booking, style exploration,
-                  and business management tools.
+                  {item?.answer}
                 </p>
               </div>
             </div>
             <div className="w-[4%] flex justify-start items-center pt-4 gap-2">
-              <CiEdit
+              {/* <CiEdit
                 onClick={() => {
                   setOpenEditModal(true);
                   const filterdData = FAQData.filter(
@@ -136,10 +162,10 @@ const FAQ = () => {
                   seteditID(item?._id);
                 }}
                 className="text-2xl cursor-pointer"
-              />
+              /> */}
               <RxCross2
                 onClick={() => {
-                  setDeleteId(item?._id);
+                  setDeleteId(item?.id);
                   setShowDelete(true);
                 }}
                 className="text-2xl cursor-pointer"
@@ -147,6 +173,14 @@ const FAQ = () => {
             </div>
           </div>
         ))}
+        <div className="flex justify-end items-center">
+          <Pagination
+            pageSize={faqs?.per_page}
+            total={faqs?.total}
+            current={page}
+            onChange={(page) => setPage(page)}
+          />
+        </div>
       </div>
       <Modal
         centered
@@ -315,7 +349,7 @@ const FAQ = () => {
             Do you want to delete this content ?
           </p>
           <button
-            // onClick={handeldelete}
+            onClick={handleDelete}
             className="bg-[#F27405] py-2 px-5 text-white rounded-md"
           >
             Confirm
