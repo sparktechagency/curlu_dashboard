@@ -193,6 +193,7 @@ const AllFeedbacks = ({ head = true }) => {
           </div>
         )}
       </div>
+      {/* table all feedback */}
       <Table
         scroll={{ x: 1500 }}
         columns={columns}
