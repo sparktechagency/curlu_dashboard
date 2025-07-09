@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 export const baseApi = createApi({
   reducerPath: 'HairSalon',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://182.252.68.227:8007/api',
+    baseUrl: 'http://103.186.20.114:8007',
     headers: {
       Authorization: `Bearer ${
         JSON.parse(localStorage.getItem('token')) || ''
@@ -12,7 +12,7 @@ export const baseApi = createApi({
   endpoints: () => ({}),
   tagTypes: ['auth', 'category', 'msg', 'earning', 'feedback'],
 });
-export const imageUrl = 'http://182.252.68.227:8007/';
+export const imageUrl = 'http://103.186.20.114:8007';
 export const generateImage = (image) => {
   if (typeof image !== 'string') {
     return '';
@@ -22,7 +22,7 @@ export const generateImage = (image) => {
     return image;
   }
   if (image.startsWith('/')) {
-    return `http://182.252.68.227:8007${image}`;
+    return `http://103.186.20.114:8007/${image}`;
   }
-  return `http://182.252.68.227:8007/${image}`; //
+  return `http://103.186.20.114:8007/${image}`; //
 };
