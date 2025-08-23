@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from "react";
 import {
   Calendar,
   Dropdown,
@@ -9,40 +9,40 @@ import {
   Select,
   Slider,
   Table,
-} from 'antd';
+} from "antd";
 import {
   FaFileExcel,
   FaRegFilePdf,
   FaRegTrashCan,
   FaUserCheck,
-} from 'react-icons/fa6';
-import Swal from 'sweetalert2';
-import { GoArrowUpRight } from 'react-icons/go';
-import { TfiReload } from 'react-icons/tfi';
+} from "react-icons/fa6";
+import Swal from "sweetalert2";
+import { GoArrowUpRight } from "react-icons/go";
+import { TfiReload } from "react-icons/tfi";
 import {
   useBlockUnblockMutation,
   useGetUserQuery,
-} from '../../Redux/Apis/userApi';
-import { imageUrl } from '../../Redux/baseApi';
-import { FaSearch } from 'react-icons/fa';
-import { CSVDownload, CSVLink } from 'react-csv';
-import toast from 'react-hot-toast';
-import { TbUserX } from 'react-icons/tb';
+} from "../../Redux/Apis/userApi";
+import { imageUrl } from "../../Redux/baseApi";
+import { FaSearch } from "react-icons/fa";
+import { CSVDownload, CSVLink } from "react-csv";
+import toast from "react-hot-toast";
+import { TbUserX } from "react-icons/tb";
 
 const TotalSellerList = () => {
   const [value, setValue] = useState(
-    new URLSearchParams(window.location.search).get('date') ||
-      new Date().toLocaleDateString('en-US', {
-        month: 'short',
-        day: '2-digit',
-        year: 'numeric',
+    new URLSearchParams(window.location.search).get("date") ||
+      new Date().toLocaleDateString("en-US", {
+        month: "short",
+        day: "2-digit",
+        year: "numeric",
       })
   );
   const [page, setPage] = useState(
-    new URLSearchParams(window.location.search).get('page') || 1
+    new URLSearchParams(window.location.search).get("page") || 1
   );
   const [selectedData, setSelectedData] = useState({});
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const {
     data: users,
@@ -66,18 +66,18 @@ const TotalSellerList = () => {
       key: index + 1 + (users?.current_page - 1) * users?.per_page,
       name: `${name} ${last_name}`,
       email: email,
-      date: new Date(created_at).toLocaleString('en-US', {
-        month: 'short',
-        day: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
+      date: new Date(created_at).toLocaleString("en-US", {
+        month: "short",
+        day: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
       }), // Format creation date
-      location: address || 'Unknown',
-      contact: phone || 'No contact',
+      location: address || "Unknown",
+      contact: phone || "No contact",
       img: image
         ? `${imageUrl}${image}`
-        : 'https://i.ibb.co/B2xfD8H/images.png',
+        : "https://i.ibb.co/B2xfD8H/images.png",
       rest,
     };
   });
@@ -87,36 +87,36 @@ const TotalSellerList = () => {
       key: index + 1 + (users?.current_page - 1) * users?.per_page,
       name: `${name} ${last_name}`,
       email: email,
-      date: new Date(created_at).toLocaleString('en-US', {
-        month: 'short',
-        day: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
+      date: new Date(created_at).toLocaleString("en-US", {
+        month: "short",
+        day: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
       }), // Format creation date
-      location: address || 'Unknown',
-      contact: phone || 'No contact',
+      location: address || "Unknown",
+      contact: phone || "No contact",
       img: image
         ? `${imageUrl}${image}`
-        : 'https://i.ibb.co/B2xfD8H/images.png',
+        : "https://i.ibb.co/B2xfD8H/images.png",
     };
   });
 
   const handleDelete = (id) => {
     Swal.fire({
-      title: 'Are you sure?',
-      icon: 'warning',
+      title: "Are you sure?",
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes',
-      cancelButtonText: 'No',
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes",
+      cancelButtonText: "No",
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire({
-          title: 'Deleted!',
-          text: 'Your file has been deleted.',
-          icon: 'success',
+          title: "Deleted!",
+          text: "Your file has been deleted.",
+          icon: "success",
           showConfirmButton: false,
           timer: 1500,
         });
@@ -125,14 +125,14 @@ const TotalSellerList = () => {
   };
   const columns = [
     {
-      title: 'S.No',
-      dataIndex: 'key',
-      key: 'key',
+      title: "S.No",
+      dataIndex: "key",
+      key: "key",
     },
     {
-      title: 'User',
-      dataIndex: 'name',
-      key: 'username',
+      title: "User",
+      dataIndex: "name",
+      key: "username",
       render: (_, record) => (
         <div className="flex justify-start items-center gap-2">
           <Image
@@ -145,29 +145,29 @@ const TotalSellerList = () => {
       ),
     },
     {
-      title: 'Email',
-      dataIndex: 'email',
-      key: 'email',
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
     },
     {
-      title: 'Location',
-      dataIndex: 'location',
-      key: 'location',
+      title: "Location",
+      dataIndex: "location",
+      key: "location",
     },
     {
-      title: 'Contact',
-      dataIndex: 'contact',
-      key: 'contact',
+      title: "Contact",
+      dataIndex: "contact",
+      key: "contact",
     },
     {
-      title: 'Date',
-      dataIndex: 'date',
-      key: 'date',
+      title: "Date",
+      dataIndex: "date",
+      key: "date",
     },
     {
-      title: 'ACTION',
-      dataIndex: 'printView',
-      key: 'printView',
+      title: "ACTION",
+      dataIndex: "printView",
+      key: "printView",
       render: (_, record) => (
         <div className="flex justify-start items-center gap-2">
           <GoArrowUpRight
@@ -180,9 +180,9 @@ const TotalSellerList = () => {
           <Popconfirm
             placement="topRight"
             title={`Are you sure you want to ${
-              record?.rest?.user_status == 'inactive' ? 'unblock' : 'block'
+              record?.rest?.is_blocked === 1 ? "block" : "unblock"
             } this user?`}
-            description={''}
+            description={""}
             okText="Yes"
             cancelText="No"
             onConfirm={() => {
@@ -198,16 +198,12 @@ const TotalSellerList = () => {
           >
             <button
               className={`${
-                record?.rest?.user_status == 'inactive'
-                  ? 'text-red-500'
-                  : 'text-green-500'
+                record?.rest?.is_blocked === 1
+                  ? "text-red-500"
+                  : "text-green-500"
               }  text-2xl cursor-pointer`}
             >
-              {record?.rest?.user_status == 'inactive' ? (
-                <TbUserX />
-              ) : (
-                <FaUserCheck />
-              )}
+              {record?.rest?.is_blocked === 1 ? <TbUserX /> : <FaUserCheck />}
             </button>
           </Popconfirm>
         </div>
@@ -218,27 +214,27 @@ const TotalSellerList = () => {
   const handlePageChange = (page) => {
     setPage(page);
     const params = new URLSearchParams(window.location.search);
-    params.set('page', page);
-    window.history.pushState(null, '', `?${params.toString()}`);
+    params.set("page", page);
+    window.history.pushState(null, "", `?${params.toString()}`);
   };
   const onSelect = (newValue) => {
-    const date = newValue.format('MMM-DD-YYYY');
+    const date = newValue.format("MMM-DD-YYYY");
     setValue(date);
     const params = new URLSearchParams(window.location.search);
-    params.set('date', date);
-    window.history.pushState(null, '', `?${params.toString()}`);
+    params.set("date", date);
+    window.history.pushState(null, "", `?${params.toString()}`);
   };
   const handleChange = (value) => {};
   return (
     <div
       style={{
-        background: 'white',
-        padding: '20px',
-        borderRadius: '12px',
+        background: "white",
+        padding: "20px",
+        borderRadius: "12px",
       }}
     >
       <div className="mb-6 flex justify-between items-center">
-        <h1 style={{ fontSize: '20px', fontWeight: 600, color: '#2F2F2F' }}>
+        <h1 style={{ fontSize: "20px", fontWeight: 600, color: "#2F2F2F" }}>
           All user details
         </h1>
         <div className="flex justify-end items-center gap-3">
@@ -281,49 +277,49 @@ const TotalSellerList = () => {
           <div className="flex justify-center items-center flex-col py-5 gap-4">
             <img
               className="w-20 h-20 rounded-full"
-              src={selectedData?.img || 'https://i.ibb.co/B2xfD8H/images.png'}
-              alt={selectedData?.name || 'User Image'}
+              src={selectedData?.img || "https://i.ibb.co/B2xfD8H/images.png"}
+              alt={selectedData?.name || "User Image"}
             />
             <p className="text-base font-semibold">
-              {selectedData?.name || 'Md. Mahmud'}
+              {selectedData?.name || "Md. Mahmud"}
             </p>
           </div>
           <div className="flex flex-col justify-start items-start gap-3">
             <div>
               <p className="text-sm font-semibold mb-1">Name</p>
-              <p className=" text-xs">{selectedData?.name || 'Mr. Mahmud'}</p>
+              <p className=" text-xs">{selectedData?.name || "Mr. Mahmud"}</p>
             </div>
             <div>
               <p className="text-sm font-semibold mb-1">Email</p>
               <p className=" text-xs">
-                {selectedData?.email || 'mahmud@gmail.com'}
+                {selectedData?.email || "mahmud@gmail.com"}
               </p>
             </div>
             <div>
               <p className="text-sm font-semibold mb-1">Address</p>
               <p className=" text-xs">
                 {selectedData?.location ||
-                  '76/4 R no. 60/1 Rue des Saints-Paris, 75005 Paris'}
+                  "76/4 R no. 60/1 Rue des Saints-Paris, 75005 Paris"}
               </p>
             </div>
             <div>
               <p className="text-sm font-semibold mb-1">Contact No</p>
-              <p className=" text-xs">{selectedData?.contact || '+099999'}</p>
+              <p className=" text-xs">{selectedData?.contact || "+099999"}</p>
             </div>
             <div>
               <p className="text-sm font-semibold mb-1">Date of birth</p>
               <p className=" text-xs">
                 {selectedData?.date_of_birth
                   ? new Date(selectedData.date_of_birth).toLocaleDateString(
-                      'en-US',
-                      { day: '2-digit', month: 'short', year: 'numeric' }
+                      "en-US",
+                      { day: "2-digit", month: "short", year: "numeric" }
                     )
-                  : '17 Dec, 2024'}
+                  : "17 Dec, 2024"}
               </p>
             </div>
             <div>
               <p className="text-sm font-semibold mb-1">Gender</p>
-              <p className=" text-xs">{selectedData?.gender || 'Male'}</p>
+              <p className=" text-xs">{selectedData?.gender || "Male"}</p>
             </div>
           </div>
         </div>
