@@ -183,9 +183,9 @@ const SalonsDetails = () => {
                 }  text-2xl cursor-pointer`}
             >
               {record?.rest?.is_blocked === 1 ? (
-                <FaUserCheck />
-              ) : (
                 <TbUserX />
+              ) : (
+                <FaUserCheck />
               )}
             </button>
           </Popconfirm>
