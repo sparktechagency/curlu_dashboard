@@ -37,11 +37,11 @@ import toast from 'react-hot-toast';
 const SalonsDetails = () => {
   const [value, setValue] = useState(
     new URLSearchParams(window.location.search).get('date') ||
-      new Date().toLocaleDateString('en-US', {
-        month: 'short',
-        day: '2-digit',
-        year: 'numeric',
-      })
+    new Date().toLocaleDateString('en-US', {
+      month: 'short',
+      day: '2-digit',
+      year: 'numeric',
+    })
   );
   const [filters, setFilters] = useState({
     search: '',
@@ -160,9 +160,7 @@ const SalonsDetails = () => {
           />
           <Popconfirm
             placement="topRight"
-            title={`Are you sure you want to ${
-              record?.rest?.user_status == 'inactive' ? 'unblock' : 'block'
-            } this user?`}
+            title={`Are you sure you want to ${record?.rest?.is_blocked === 1 ? "unblock" : "block"} this user?`}
             description={''}
             okText="Yes"
             cancelText="No"
@@ -179,16 +177,15 @@ const SalonsDetails = () => {
             }}
           >
             <button
-              className={`${
-                record?.rest?.user_status == 'inactive'
-                  ? 'text-red-500'
-                  : 'text-green-500'
-              }  text-2xl cursor-pointer`}
+              className={`${record?.rest?.is_blocked === 1
+                ? 'text-red-500'
+                : 'text-green-500'
+                }  text-2xl cursor-pointer`}
             >
-              {record?.rest?.user_status == 'inactive' ? (
-                <TbUserX />
-              ) : (
+              {record?.rest?.is_blocked === 1 ? (
                 <FaUserCheck />
+              ) : (
+                <TbUserX />
               )}
             </button>
           </Popconfirm>
@@ -200,7 +197,7 @@ const SalonsDetails = () => {
   const handlePageChange = (page) => {
     setFilters((prev) => ({ ...prev, page }));
   };
-  const handleChange = (value) => {};
+  const handleChange = (value) => { };
   const csvData = salons?.data?.map((salon, index) => {
     const {
       user,
