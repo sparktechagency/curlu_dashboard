@@ -23,6 +23,7 @@ import { TiShoppingCart } from 'react-icons/ti';
 import { IoMdNotificationsOutline } from 'react-icons/io';
 import { useGetProfileQuery } from '../../Redux/Apis/authApis';
 import { generateImage } from '../../Redux/baseApi';
+import { useNotificationsDataQuery } from '../../Redux/Apis/notificationApis';
 const Dashboard = () => {
   const [superAdmin, setSuperAdmin] = useState(false)
   const [dropdown, setDropdown] = useState(false);
@@ -33,6 +34,8 @@ const Dashboard = () => {
     navigate('/login');
     window.location.reload();
   };
+
+  const { data: notificationData } = useNotificationsDataQuery()
 
   useEffect(() => {
     data?.user?.role_type === 'SUPER ADMIN' ? setSuperAdmin(true) : setSuperAdmin(false)
@@ -382,7 +385,7 @@ const Dashboard = () => {
               justifyContent: 'end',
             }}
           >
-            <Badge color="#C30303" count={5}>
+            <Badge color="#C30303" count={notificationData?.unread_notification}>
               <Link to="/notification">
                 <RiNotification2Line color="#6A6A6A" size={24} />
               </Link>

@@ -84,9 +84,7 @@ const aboutUsApi = baseApi.injectEndpoints({
         dashboardData: builder.query({
             query: () => `/dashboard`
         }),
-        notificationsData: builder.query({
-            query: () => `/notifications`
-        })
+
     }),
 });
 
@@ -101,5 +99,5 @@ export const {
     useGetFaqsQuery,
     useDeleteFaqsMutation,
     useDashboardDataQuery,
-    useNotificationsDataQuery
+
 } = aboutUsApi;

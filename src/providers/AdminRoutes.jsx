@@ -15,8 +15,7 @@ const AdminRoutes = ({ children }) => {
         '/salon-invoice',
         '/orders-transaction',
     ]
-
-    console.log(data?.user)
+    
     if (!data?.user?.email) {
         return <Navigate to={`/login`}></Navigate>
     }

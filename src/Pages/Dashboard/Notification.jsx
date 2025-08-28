@@ -1,12 +1,14 @@
 import { Modal } from 'antd';
 import React, { useState } from 'react'
-import { useNotificationsDataQuery } from '../../Redux/Apis/aboutApis';
-
+import { useNotificationsDataQuery, useMarkReadNotificationMutation, useMarkAllNotificationMutation } from '../../Redux/Apis/notificationApis';
+import toast from 'react-hot-toast';
 
 const Notification = () => {
-  const [page, setPage] = useState( new URLSearchParams(window.location.search).get('page') || 1);
-  const {data}=useNotificationsDataQuery()
-  const handlePageChange=(page)=>{
+  const [page, setPage] = useState(new URLSearchParams(window.location.search).get('page') || 1);
+  const { data } = useNotificationsDataQuery()
+  const [markReadNotification] = useMarkReadNotificationMutation()
+  const [markAllNotification] = useMarkAllNotificationMutation()
+  const handlePageChange = (page) => {
     setPage(page);
     const params = new URLSearchParams(window.location.search);
     params.set('page', page);
@@ -14,12 +16,19 @@ const Notification = () => {
   }
   const [openAddModel, setOpenAddModel] = useState(false);
   const [currentNotification, setCurrentNotification] = useState({})
-  const handleReadAll = () => {
-   
+
+  const handleReadAll = async () => {
+    await markAllNotification().unwrap().then((res) => {
+      toast.success(res?.message)
+    })
   }
-  const handleRead = (id) => {
-    
+
+  const handleRead = async (id) => {
+    await markReadNotification(id).unwrap().then((res) => {
+      toast.success(res?.message)
+    })
   }
+
   return (
     <div>
       <div className="flex justify-between items-center gap-4">
@@ -48,7 +57,6 @@ const Notification = () => {
             <button
               onClick={() => {
                 setOpenAddModel(true);
-                handleRead(item?.id)
                 setCurrentNotification(item)
               }}
               className="text-[#F27405] font-medium text-lg"
@@ -66,20 +74,23 @@ const Notification = () => {
         width={600}
         footer={false}
       >
-        <div className="p-5 min-h-96 relative">
+        <div className="p-5 relative">
           <div>
-            <div className="flex justify-start items-center gap-8 mb-1 text-[#919191]">
-              <h3 className="text-[#555555] font-bold">{currentNotification?.title}</h3>
-              <p>{currentNotification?.date}</p>
+            <div className="flex justify-start flex-col items-start gap-8 text-[#919191]">
+              <h3 className="text-[#555555] font-bold">{currentNotification?.data?.name}</h3>
+              <span>Date: {currentNotification?.data?.created_at?.split('T')?.[0]}</span>
             </div>
-            <div className="flex justify-start items-center gap-2 text-[#919191] mt-3">
-              <h3>{currentNotification?.item}</h3>
-              <p>{currentNotification?.price}</p>
+            <div className="flex justify-start flex-col items-start gap-2 text-[#919191] mt-3">
+              <h3>Address: {currentNotification?.data?.address}</h3>
+              <p>Message: {currentNotification?.data?.message}</p>
             </div>
+            <button
+              onClick={() => handleRead(currentNotification?.id)}
+              className="text-[#F27405] font-medium text-lg mt-5"
+            >
+              Mark as read
+            </button>
           </div>
-          {/* <button className="bg-[#F27405] p-3 px-6 text-[#FEFEFE] absolute bottom-6 right-6">
-            Visit page
-          </button> */}
         </div>
       </Modal>
     </div>
