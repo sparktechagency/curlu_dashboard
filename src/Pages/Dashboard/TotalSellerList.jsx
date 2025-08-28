@@ -25,31 +25,19 @@ import {
 } from "../../Redux/Apis/userApi";
 import { imageUrl } from "../../Redux/baseApi";
 import { FaSearch } from "react-icons/fa";
-import { CSVDownload, CSVLink } from "react-csv";
+import { CSVLink } from "react-csv";
 import toast from "react-hot-toast";
 import { TbUserX } from "react-icons/tb";
 
 const TotalSellerList = () => {
-  const [value, setValue] = useState(
-    new URLSearchParams(window.location.search).get("date") ||
-      new Date().toLocaleDateString("en-US", {
-        month: "short",
-        day: "2-digit",
-        year: "numeric",
-      })
-  );
-  const [page, setPage] = useState(
-    new URLSearchParams(window.location.search).get("page") || 1
-  );
+  const [page, setPage] = useState(1);
   const [selectedData, setSelectedData] = useState({});
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const {
     data: users,
-    refetch,
     isLoading,
-    isFetching,
-  } = useGetUserQuery({ page, location: search });
+  } = useGetUserQuery({ page, search, per_page: 10 });
   const [blockUnblock] = useBlockUnblockMutation();
   const data = users?.data?.map((user, index) => {
     const {
@@ -72,7 +60,7 @@ const TotalSellerList = () => {
         year: "numeric",
         hour: "2-digit",
         minute: "2-digit",
-      }), // Format creation date
+      }),
       location: address || "Unknown",
       contact: phone || "No contact",
       img: image
@@ -93,7 +81,7 @@ const TotalSellerList = () => {
         year: "numeric",
         hour: "2-digit",
         minute: "2-digit",
-      }), // Format creation date
+      }),
       location: address || "Unknown",
       contact: phone || "No contact",
       img: image
@@ -179,9 +167,8 @@ const TotalSellerList = () => {
           />
           <Popconfirm
             placement="topRight"
-            title={`Are you sure you want to ${
-              record?.rest?.is_blocked === 1 ? "block" : "unblock"
-            } this user?`}
+            title={`Are you sure you want to ${record?.rest?.is_blocked === 1 ? "block" : "unblock"
+              } this user?`}
             description={""}
             okText="Yes"
             cancelText="No"
@@ -197,11 +184,10 @@ const TotalSellerList = () => {
             }}
           >
             <button
-              className={`${
-                record?.rest?.is_blocked === 1
-                  ? "text-red-500"
-                  : "text-green-500"
-              }  text-2xl cursor-pointer`}
+              className={`${record?.rest?.is_blocked === 1
+                ? "text-red-500"
+                : "text-green-500"
+                }  text-2xl cursor-pointer`}
             >
               {record?.rest?.is_blocked === 1 ? <TbUserX /> : <FaUserCheck />}
             </button>
@@ -211,20 +197,6 @@ const TotalSellerList = () => {
     },
   ];
 
-  const handlePageChange = (page) => {
-    setPage(page);
-    const params = new URLSearchParams(window.location.search);
-    params.set("page", page);
-    window.history.pushState(null, "", `?${params.toString()}`);
-  };
-  const onSelect = (newValue) => {
-    const date = newValue.format("MMM-DD-YYYY");
-    setValue(date);
-    const params = new URLSearchParams(window.location.search);
-    params.set("date", date);
-    window.history.pushState(null, "", `?${params.toString()}`);
-  };
-  const handleChange = (value) => {};
   return (
     <div
       style={{
@@ -255,14 +227,15 @@ const TotalSellerList = () => {
       </div>
       <div>
         <Table
+          loading={isLoading}
           scroll={{ x: 1500 }}
-          isLoading={isLoading || isFetching}
           columns={columns}
           dataSource={data}
           pagination={{
             pageSize: 10,
-            defaultCurrent: parseInt(page),
-            onChange: handlePageChange,
+            current: parseInt(page),
+            total: users?.total || 0,
+            onChange: (page) => setPage(page),
           }}
         />
       </div>
@@ -311,9 +284,9 @@ const TotalSellerList = () => {
               <p className=" text-xs">
                 {selectedData?.date_of_birth
                   ? new Date(selectedData.date_of_birth).toLocaleDateString(
-                      "en-US",
-                      { day: "2-digit", month: "short", year: "numeric" }
-                    )
+                    "en-US",
+                    { day: "2-digit", month: "short", year: "numeric" }
+                  )
                   : "17 Dec, 2024"}
               </p>
             </div>

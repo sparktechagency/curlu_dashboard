@@ -9,9 +9,21 @@ const AdminRoutes = ({ children }) => {
     if (isLoading) {
         return
     }
-    // console.log(data)
+    const superAdminRoutes = [
+        '/earning-commition-update',
+        '/make-admin',
+        '/salon-invoice',
+        '/orders-transaction',
+    ]
+
+    console.log(data?.user)
     if (!data?.user?.email) {
         return <Navigate to={`/login`}></Navigate>
+    }
+    if (superAdminRoutes.includes(window.location.pathname)) {
+        if (data?.user?.role_type !== 'SUPER ADMIN') {
+            return <Navigate to={`/`}></Navigate>
+        }
     }
     return children
 }

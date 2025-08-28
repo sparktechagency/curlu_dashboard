@@ -5,10 +5,11 @@ import { FaImage } from 'react-icons/fa6';
 import Swal from 'sweetalert2';
 import { useGetShopCategoriesQuery } from '../../Redux/Apis/shopCategory';
 import { useCreateProductMutation, useUpdateProductMutation } from '../../Redux/Apis/manageEshopApis';
+import toast from 'react-hot-toast';
 
 const CreateProductForm = ({ closeModal, initialValues = {} }) => {
-    const [createProduct] = useCreateProductMutation();
-    const [updateProduct] = useUpdateProductMutation();
+    const [createProduct, { isLoading: isCreating }] = useCreateProductMutation();
+    const [updateProduct, { isLoading: isUpdating }] = useUpdateProductMutation();
     const [image, setImage] = useState(null);
     const [form] = Form.useForm()
     const { data: shopCategory, isFetching, isLoading } = useGetShopCategoriesQuery({
@@ -29,15 +30,22 @@ const CreateProductForm = ({ closeModal, initialValues = {} }) => {
                 await updateProduct({
                     id: initialValues?.id,
                     data: formData
-                }).unwrap();
+                }).unwrap().then((res) => {
+                    toast.success(res?.message)
+                    form.resetFields()
+                    setImage(null)
+                })
                 closeModal();
             } else {
-                await createProduct(formData).unwrap();
+                await createProduct(formData).unwrap().then((res) => {
+                    toast.success(res?.message)
+                    form.resetFields()
+                    setImage(null)
+                })
                 closeModal();
             }
         } catch (error) {
-
-            Swal.fire("Error!", error?.data?.message, "error");
+            toast.error(error?.data?.message || "Something went wrong")
         }
     };
     useEffect(() => {
@@ -74,7 +82,7 @@ const CreateProductForm = ({ closeModal, initialValues = {} }) => {
             <Form.Item label="Details" name="product_details" rules={[{ required: true, message: 'Please input product details!' }]}>
                 <TextArea placeholder='Details' style={{ resize: 'none', height: '100px' }} />
             </Form.Item>
-            <Button type="primary" style={{
+            <Button loading={isCreating || isUpdating} type="primary" style={{
                 background: '#F27405'
             }} htmlType="submit" className="w-full mt-4">
                 {initialValues?.id ? 'Update Product' : 'Add Product'}

@@ -4,7 +4,6 @@ import { FaPlus, FaRegFilePdf, FaEdit } from 'react-icons/fa';
 import { MdDelete } from 'react-icons/md';
 import Swal from 'sweetalert2';
 import {
-  useUpdateProductMutation,
   useGetProductsQuery,
   useDeleteProductMutation,
 } from '../../Redux/Apis/manageEshopApis';
@@ -14,9 +13,7 @@ import { CSVLink } from 'react-csv';
 import { BsFileEarmarkExcelFill } from 'react-icons/bs';
 
 const ManageShop = () => {
-  const [page, setPage] = useState(
-    new URLSearchParams(window.location.search).get('page') || 1
-  );
+  const [page, setPage] = useState(1);
   const [openModal, setOpenModal] = useState(false);
   const [editProductData, setEditProductData] = useState(null);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
@@ -24,7 +21,7 @@ const ManageShop = () => {
 
   // Fetch products
   const { data: productsData, isLoading: isProductsLoading } =
-    useGetProductsQuery(page);
+    useGetProductsQuery({ page, per_page: 10 });
   const [deleteProduct] = useDeleteProductMutation();
   // Transform data for table
   const transformedData = productsData?.data?.map((item, index) => ({
@@ -102,12 +99,6 @@ const ManageShop = () => {
     },
   ];
 
-  const handlePageChange = (page) => {
-    setPage(page);
-    const params = new URLSearchParams(window.location.search);
-    params.set('page', page);
-    window.history.pushState(null, '', `?${params.toString()}`);
-  };
 
   return (
     <div style={{ background: 'white', padding: '20px', borderRadius: '12px' }}>
@@ -130,15 +121,16 @@ const ManageShop = () => {
         </div>
       </div>
       <Table
-        scroll={{ x: 1500 }}
+        scroll={{ x: 'max-content' }}
         columns={columns}
         dataSource={transformedData || []}
         loading={isProductsLoading}
         pagination={{
-          pageSize: productsData?.per_page,
-          current: parseInt(page),
-          onChange: handlePageChange,
-          total: productsData?.total,
+          pageSize: 10,
+          current: productsData?.current_page || 1,
+          total: productsData?.total || 0,
+          onChange: (page) => setPage(page),
+          showSizeChanger: false
         }}
       />
       <Modal

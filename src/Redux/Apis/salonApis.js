@@ -3,10 +3,10 @@ import { baseApi } from "../baseApi";
 const salonApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         getSalon: builder.query({
-            query: ({ page, location }) => ({
+            query: ({ page, location, per_page }) => ({
                 url: 'all-salon',
                 method: 'GET',
-                params: { page, location },
+                params: { page, search:location, per_page },
             }),
             providesTags: ['salon'],
         }),

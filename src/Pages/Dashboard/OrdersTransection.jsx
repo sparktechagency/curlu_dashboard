@@ -151,7 +151,7 @@ const OrdersTransection = () => {
             color: '#2F2F2F',
           }}
         >
-          Order Trans
+          Order Transaction
         </h1>
         <div className="flex justify-end items-center gap-3">
           <DatePicker

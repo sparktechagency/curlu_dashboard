@@ -55,12 +55,13 @@ const SalonsDetails = () => {
   const [openAddSalon, setOpenAddSalon] = useState(false);
   const [selectedData, setSelectedData] = useState({});
   const [location, setLocation] = useState('');
+  const [page, setPage] = useState(1);
   const {
     data: salons,
     refetch,
     isLoading,
     isFetching,
-  } = useGetSalonQuery({ page: filters.page, location });
+  } = useGetSalonQuery({ page: page, location, per_page: 10 });
   const [blockUnblock] = useBlockUnblockMutation();
   const data = salons?.data?.map((salon, index) => {
     const {
@@ -193,11 +194,6 @@ const SalonsDetails = () => {
       ),
     },
   ];
-
-  const handlePageChange = (page) => {
-    setFilters((prev) => ({ ...prev, page }));
-  };
-  const handleChange = (value) => { };
   const csvData = salons?.data?.map((salon, index) => {
     const {
       user,
@@ -293,9 +289,10 @@ const SalonsDetails = () => {
           dataSource={data}
           pagination={{
             pageSize: 10,
-            current: filters.page,
-            total: data?.length || 0,
-            onChange: handlePageChange,
+            current: page,
+            total: salons?.total || 0,
+            onChange: (page) => setPage(page),
+            showSizeChanger: false
           }}
         />
       </div>

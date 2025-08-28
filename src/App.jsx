@@ -7,7 +7,6 @@ import Otp from "./Pages/Auth/Otp";
 import Login from "./Pages/Auth/Login";
 import UpdatePassword from "./Pages/Auth/UpdatePassword";
 import NotFound from "./404";
-import PrivateRoute from "./routes/PrivateRoute";
 import Package from "./Pages/Dashboard/Package";
 import EditPackage from "./Pages/Dashboard/EditPackage";
 import MakeAdmin from "./Pages/Dashboard/MakeAdmin";

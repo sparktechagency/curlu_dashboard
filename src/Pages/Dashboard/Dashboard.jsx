@@ -20,19 +20,23 @@ import {
   FaUserPlus,
 } from 'react-icons/fa6';
 import { TiShoppingCart } from 'react-icons/ti';
-import { IoIosChatbubbles, IoMdNotificationsOutline } from 'react-icons/io';
+import { IoMdNotificationsOutline } from 'react-icons/io';
 import { useGetProfileQuery } from '../../Redux/Apis/authApis';
 import { generateImage } from '../../Redux/baseApi';
 const Dashboard = () => {
+  const [superAdmin, setSuperAdmin] = useState(false)
   const [dropdown, setDropdown] = useState(false);
   const { pathname } = useLocation();
   const { data } = useGetProfileQuery();
-  console.log(data?.user?.image);
   const navigate = useNavigate();
   const handleLogOut = () => {
     navigate('/login');
     window.location.reload();
   };
+
+  useEffect(() => {
+    data?.user?.role_type === 'SUPER ADMIN' ? setSuperAdmin(true) : setSuperAdmin(false)
+  }, [data?.user]);
 
   const linkItems = [
     {
@@ -70,36 +74,44 @@ const Dashboard = () => {
       path: '/product-category',
       icon: <TbCategoryMinus size={24} />,
     },
-    {
-      title: 'Orders Transaction',
-      path: '/orders-transaction',
-      icon: <TbShoppingCartDollar size={24} />,
-    },
+    ...(superAdmin ? [
+      {
+        title: 'Orders Transaction',
+        path: '/orders-transaction',
+        icon: <TbShoppingCartDollar size={24} />,
+      },
+    ] : []),
     // {
     //   title: 'Chat',
     //   path: '/chat',
     //   icon: <IoIosChatbubbles size={24} />,
     // },
-    {
-      title: 'Salon Invoice',
-      path: '/salon-invoice',
-      icon: <FaFileInvoiceDollar size={24} />,
-    },
-    {
-      title: 'Make Admin',
-      path: '/make-admin',
-      icon: <FaUserPlus size={24} />,
-    },
+    ...(superAdmin ? [
+      {
+        title: 'Salon Invoice',
+        path: '/salon-invoice',
+        icon: <FaFileInvoiceDollar size={24} />,
+      },
+    ] : []),
+    ...(superAdmin ? [
+      {
+        title: 'Make Admin',
+        path: '/make-admin',
+        icon: <FaUserPlus size={24} />,
+      },
+    ] : []),
     {
       title: 'Notifications',
       path: '/notification',
       icon: <IoMdNotificationsOutline size={24} />,
     },
-    {
-      title: 'Earning Commission',
-      path: '/earning-commition-update',
-      icon: <FaMoneyBillTrendUp size={24} />,
-    },
+    ...(superAdmin ? [
+      {
+        title: 'Earning Commission',
+        path: '/earning-commition-update',
+        icon: <FaMoneyBillTrendUp size={24} />,
+      },
+    ] : []),
   ];
   const settingOptions = [
     {
@@ -132,14 +144,14 @@ const Dashboard = () => {
     },
   ];
   useEffect(() => {
-    if (data?.user?.role_type === 'SUPER ADMIN') {
+    if (superAdmin) {
       linkItems.unshift({
         title: 'Make Admin',
         path: '/make-admin',
         icon: <LuUserPlus size={24} />,
       });
     }
-  }, [data?.user]);
+  }, [superAdmin]);
   return (
     <Layout style={{ height: '100vh', width: '100vw' }}>
       <Sider
@@ -202,11 +214,10 @@ const Dashboard = () => {
                 ></div>
               ) : null}
               <Link
-                className={`${
-                  item.path === pathname
-                    ? 'bg-[#F27405] text-[#FFFFFF]'
-                    : 'text-[#F27405]'
-                } py-2 rounded hover:bg-[#F27405] hover:text-[#FFFFFF] w-full px-2`}
+                className={`${item.path === pathname
+                  ? 'bg-[#F27405] text-[#FFFFFF]'
+                  : 'text-[#F27405]'
+                  } py-2 rounded hover:bg-[#F27405] hover:text-[#FFFFFF] w-full px-2`}
                 to={item.path}
                 style={{
                   display: 'flex',

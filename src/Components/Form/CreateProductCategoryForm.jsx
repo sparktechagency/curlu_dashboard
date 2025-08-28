@@ -10,8 +10,8 @@ const CreateProductCategoryForm = ({ closeModal, formFor, selectedData, setSelec
     const [update, { isLoading: isUpdating }] = useUpdateShopCategoryMutation()
     const [image, setImage] = useState(null);
     const onFinish = (values) => {
-        if(image){
-            values.category_image= image
+        if (image) {
+            values.category_image = image
         }
         const formData = new FormData();
         formData.append('category_name', values.category_name);
@@ -21,9 +21,10 @@ const CreateProductCategoryForm = ({ closeModal, formFor, selectedData, setSelec
                 toast.error('Please select an image')
             }
             create(formData).unwrap().then(res => {
+                setImage(null)
                 closeModal()
-                form.resetFields()
                 toast.dismiss()
+                form.resetFields()
                 toast.success(res?.message)
             }).catch(err => {
                 toast.dismiss()
@@ -31,8 +32,9 @@ const CreateProductCategoryForm = ({ closeModal, formFor, selectedData, setSelec
             })
         } else {
             // values._method = 'PUT';
-            formData.append('_method',"PUT");
+            formData.append('_method', "PUT");
             update({ id: selectedData?.id, data: formData }).unwrap().then(res => {
+                setImage(null)
                 closeModal()
                 form.resetFields()
                 toast.dismiss()
