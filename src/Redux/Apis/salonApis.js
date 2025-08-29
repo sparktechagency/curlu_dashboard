@@ -23,13 +23,12 @@ const salonApi = baseApi.injectEndpoints({
             invalidatesTags: ['salon'],
         }),
         getSalonServices: builder.query({
-            query: ({ user_name, address, category_id, service_status, price_min, price_max, page }) => ({
+            query: ({ user_name, address, category_id, page }) => ({
                 url: 'salon-services',
                 method: 'GET',
                 params: {
                     address,
                     category_id,
-                    service_status,
                     user_name,
                     page
                 }

@@ -9,17 +9,17 @@ import { MdDelete } from 'react-icons/md';
 import { Image, Modal, Table } from 'antd';
 import { FaPlus, FaRegFilePdf } from 'react-icons/fa6';
 import CreateSalonCategoryFrom from '../../Components/Form/CreateSalonCategoryFrom';
-import { imageUrl } from '../../Redux/baseApi';
+import { generateImage, imageUrl } from '../../Redux/baseApi';
 import { BsFileEarmarkExcelFill } from 'react-icons/bs';
 import { CSVLink } from 'react-csv';
 const ServicesCategory = () => {
   const [value, setValue] = useState(
     new URLSearchParams(window.location.search).get('date') ||
-      new Date().toLocaleDateString('en-US', {
-        month: 'short',
-        day: '2-digit',
-        year: 'numeric',
-      })
+    new Date().toLocaleDateString('en-US', {
+      month: 'short',
+      day: '2-digit',
+      year: 'numeric',
+    })
   );
   const [page, setPage] = useState(
     new URLSearchParams(window.location.search).get('page') || 1
@@ -36,7 +36,7 @@ const ServicesCategory = () => {
   const [deleteCategory] = useDeleteCategoryMutation();
 
   // const [deleteCategory] = useDeleteCategoryMutation();
-
+  console.log(categoriesData)
   const handleDelete = (id) => {
     Swal.fire({
       title: 'Are you sure?',
@@ -76,7 +76,7 @@ const ServicesCategory = () => {
         1 +
         (categoriesData?.current_page - 1) * categoriesData?.per_page,
       name: category.category_name,
-      img: `${imageUrl}${category.category_image}`,
+      img: category.category_image,
       id: category?.id,
     })) || [];
 
@@ -94,7 +94,7 @@ const ServicesCategory = () => {
         <div className="flex justify-start items-center gap-2">
           <Image
             className="!w-10 !h-10 !overflow-hidden !object-cover rounded-full"
-            src={record?.img}
+            src={generateImage(record?.img)}
             alt=""
           />
         </div>

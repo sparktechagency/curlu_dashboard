@@ -11,7 +11,7 @@ import {
   useGetSalonServicesQuery,
   useUpdateSalonServiceStatusMutation,
 } from '../../Redux/Apis/salonApis';
-import { useGetCategoriesQuery } from '../../Redux/Apis/categoryApis';
+// import { useGetCategoriesQuery } from '../../Redux/Apis/categoryApis';
 import { generateImage } from '../../Redux/baseApi';
 import { BsFileEarmarkExcelFill } from 'react-icons/bs';
 import { CSVLink } from 'react-csv';
@@ -23,7 +23,6 @@ const SalonsServices = () => {
   const [openAddSalon, setOpenAddSalon] = useState(false);
   const [filters, setFilters] = useState({
     serviceCategory: '',
-    status: 'active',
     salonAddress: '',
     user_name: '',
   });
@@ -35,7 +34,6 @@ const SalonsServices = () => {
   } = useGetSalonServicesQuery({
     page,
     address: filters.salonAddress,
-    service_status: filters.status,
     user_name: filters.user_name,
   });
   const [updateSalonServiceStatus] = useUpdateSalonServiceStatusMutation();
@@ -88,7 +86,7 @@ const SalonsServices = () => {
       render: (_, record) => (
         <div className="flex items-center gap-2">
           <img
-            className="w-10 h-10 rounded-full"
+            className="w-10 h-10 object-cover rounded-full"
             src={generateImage(record?.img)}
             alt=""
           />
@@ -168,7 +166,7 @@ const SalonsServices = () => {
             }
             style={{ width: '300px', height: '39px', borderRadius: '8px' }}
           />
-          <Select
+          {/* <Select
             onChange={(value) => handleFilterChange('status', value)}
             showSearch
             placeholder="Status"
@@ -178,7 +176,7 @@ const SalonsServices = () => {
               { value: 'inactive', label: 'Inactive' },
             ]}
             style={{ width: '150px', height: '39px', borderRadius: '8px' }}
-          />
+          /> */}
           <button
             className="p-2 text-lg text-white bg-[#F27405] rounded-md"
             onClick={() => handlePageChange(1)}

@@ -23,7 +23,7 @@ import {
   useBlockUnblockMutation,
   useGetUserQuery,
 } from "../../Redux/Apis/userApi";
-import { imageUrl } from "../../Redux/baseApi";
+import { generateImage, imageUrl } from "../../Redux/baseApi";
 import { FaSearch } from "react-icons/fa";
 import { CSVLink } from "react-csv";
 import toast from "react-hot-toast";
@@ -63,9 +63,7 @@ const TotalSellerList = () => {
       }),
       location: address || "Unknown",
       contact: phone || "No contact",
-      img: image
-        ? `${imageUrl}${image}`
-        : "https://i.ibb.co/B2xfD8H/images.png",
+      img: generateImage(image),
       rest,
     };
   });
@@ -84,9 +82,7 @@ const TotalSellerList = () => {
       }),
       location: address || "Unknown",
       contact: phone || "No contact",
-      img: image
-        ? `${imageUrl}${image}`
-        : "https://i.ibb.co/B2xfD8H/images.png",
+      img: generateImage(image),
     };
   });
 

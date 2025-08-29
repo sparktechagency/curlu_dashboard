@@ -91,12 +91,8 @@ const SalonsDetails = () => {
       }), // Format creation date
       location: address || 'Unknown',
       contact: phone || 'No contact',
-      img: image
-        ? `${imageUrl}${image}`
-        : 'https://i.ibb.co/B2xfD8H/images.png',
-      cover_image: cover_image
-        ? `${imageUrl}${cover_image}`
-        : 'https://i.ibb.co/CBvrNxh/Rectangle-5252.png',
+      img: generateImage(image),
+      cover_image: generateImage(cover_image),
       rest: {
         id,
         experience,
@@ -208,6 +204,7 @@ const SalonsDetails = () => {
       cover_image,
       ...rest
     } = salon;
+    console.log(cover_image)
     const { name, last_name, email, address, phone, image, ...userRest } = user;
     return {
       key: index + 1,
@@ -222,12 +219,8 @@ const SalonsDetails = () => {
       }), // Format creation date
       location: address || 'Unknown',
       contact: phone || 'No contact',
-      img: image
-        ? `${imageUrl}${image}`
-        : 'https://i.ibb.co/B2xfD8H/images.png',
-      cover_image: cover_image
-        ? `${imageUrl}${cover_image}`
-        : 'https://i.ibb.co/CBvrNxh/Rectangle-5252.png',
+      img: generateImage(image),
+      cover_image: generateImage(cover_image),
     };
   });
   const isPdf = selectedData?.rest?.kbis?.toLowerCase().endsWith('.pdf');
